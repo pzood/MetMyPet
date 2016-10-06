@@ -6,7 +6,11 @@
     {{if checklists:}}
 
     <div class="checklist_list text-center">
-        <p>You have some checklists, and eventually you will see here the list.</p>
+
+        {{for cl in checklists:}}
+            <div class="checklist_title">{{=cl.title}}</div>
+        {{pass}}
+
     </div>
 
     {{else:}}
