@@ -21,6 +21,24 @@ def index():
         checklists = db(db.checklist.user_email == auth.user.email).select()
     return dict(checklists=checklists)
 
+# Only access this if one is logged in.  The button to get here is displayed only if one is
+# logged in, but remember, we cannot be sure how people get to pages.
+# Also the user might have been logged in log ago, but now the session might have expired.
+# So we need to check.
+@auth.requires_login()
+def create_checklist():
+    """Creates a new checklist."""
+    # We create a form for adding a new checklist item.  So far, the checklist items
+    # are displayed in very rough form only.
+    form = SQLFORM(db.checklist)
+    if form.process().accepted:
+        # At this point, the record has already been inserted.
+        session.flash = T('Checklist added.')
+        redirect(URL('default', 'index'))
+    elif form.errors:
+        session.flash = T('Please enter correct values.')
+    return dict(form=form)
+
 
 def user():
     """
