@@ -18,7 +18,7 @@ def index():
     if auth.user_id is not None:
         # The user is logged in.
         # Gets the list of all checklists for the user.
-        checklists = db(db.checklist.email == auth.user.email).select()
+        checklists = db(db.checklist.user_email == auth.user.email).select()
     return dict(checklists=checklists)
 
 

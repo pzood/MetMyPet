@@ -7,13 +7,14 @@
 
 {{else:}}
 
-<h1 class="main_title">Welcome!</h1>
+<h1 class="main_title text-center">Welcome!</h1>
 
-<p class="explanation">This site will help you organize your life by storing your checklists.
+<p class="explanation text-center">This site will help you organize your life by storing your checklists.
 Please log in to use it.</p>
 
-<a href="{{=URL('user', 'login')}}" class="btn btn-warning">Login</a>
-
+<div class="login_button text-center">
+    <a href="{{=URL('user', 'login')}}" class="btn btn-warning">Login</a>
+</div>
 
 {{pass}}
 </div>
