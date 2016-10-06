@@ -10,15 +10,16 @@
 
 
 def index():
+    """This displays two kind of things.
+    If the user is not logged in, it displays a login button.
+    If the user is logged in, it displays the list of checklists by the user.
     """
-    example action using the internationalization operator T and flash
-    rendered by views/default/index.html or views/generic.html
-
-    if you need a simple wiki simply replace the two lines below with:
-    return auth.wiki()
-    """
-    response.flash = T("Hello World")
-    return dict(message=T('Welcome to web2py!'))
+    checklists = None
+    if auth.user_id is not None:
+        # The user is logged in.
+        # Gets the list of all checklists for the user.
+        checklists = db(db.checklist.email == auth.user.email).select()
+    return dict(checklists=checklists)
 
 
 def user():

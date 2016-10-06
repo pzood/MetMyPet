@@ -8,7 +8,11 @@
 # Consult manual for more options, validators, etc.
 
 
-
+db.define_table('checklist',
+                Field('user_email', default=auth.user.email if auth.user_id else None),
+                Field('title'),
+                Field('checklist', 'text'),
+                )
 
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)

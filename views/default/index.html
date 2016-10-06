@@ -1,1 +1,19 @@
 {{extend 'layout.html'}}
+
+<div class="mycontent">
+{{if auth.user_id:}}
+
+
+
+{{else:}}
+
+<h1 class="main_title">Welcome!</h1>
+
+<p class="explanation">This site will help you organize your life by storing your checklists.
+Please log in to use it.</p>
+
+<a href="{{=URL('user', 'login')}}" class="btn btn-warning">Login</a>
+
+
+{{pass}}
+</div>
