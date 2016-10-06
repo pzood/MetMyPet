@@ -5,6 +5,9 @@
 
     {{if checklists:}}
 
+    <div class="checklist_list text-center">
+        <p>You have some checklists, and eventually you will see here the list.</p>
+    </div>
 
     {{else:}}
 
@@ -15,16 +18,17 @@
         <a href="{{=URL('default', 'create_checklist')}}" class="btn btn-warning text-center">
             <i class="fa fa-plus"></i>New Checklist</a>
     </div>
+
 {{else:}}
 
-<h1 class="main_title text-center">Welcome!</h1>
+    <h1 class="main_title text-center">Welcome!</h1>
 
-<p class="explanation text-center">This site will help you organize your life by storing your checklists.
-Please log in to use it.</p>
+    <p class="explanation text-center">This site will help you organize your life by storing your checklists.
+        Please log in to use it.</p>
 
-<div class="login_button text-center">
-    <a href="{{=URL('user', 'login')}}" class="btn btn-warning">Login</a>
-</div>
+    <div class="login_button text-center">
+        <a href="{{=URL('user', 'login')}}" class="btn btn-warning">Login</a>
+    </div>
 
 {{pass}}
 </div>
