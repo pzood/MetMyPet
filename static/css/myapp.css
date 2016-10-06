@@ -2,3 +2,8 @@
 .colorful {
   color: #bb8833;
 }
+
+/* line 6, ../sass/_main.scss */
+a .fa {
+  margin-right: 10px;
+}

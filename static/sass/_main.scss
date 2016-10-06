@@ -1,3 +1,8 @@
 .colorful {
   color: $clrHilight;
 }
+
+// This enforces a bit of space between the icon and the text of a button.
+a .fa {
+  margin-right: 10px;
+}
