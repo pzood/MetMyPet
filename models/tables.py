@@ -16,6 +16,7 @@ db.define_table('checklist',
 
 # I don't want to display the user email by default in all forms.
 db.checklist.user_email.readable = db.checklist.user_email.writable = False
+db.checklist.title.requires = IS_NOT_EMPTY()
 
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
