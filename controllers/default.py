@@ -18,7 +18,9 @@ def index():
     if auth.user_id is not None:
         # The user is logged in.
         # Gets the list of all checklists for the user.
-        checklists = db(db.checklist.user_email == auth.user.email).select()
+        checklists = db(db.checklist.user_email == auth.user.email).select(
+            orderby=~db.checklist.last_opened
+        )
     return dict(checklists=checklists)
 
 # Only access this if one is logged in.  The button to get here is displayed only if one is
@@ -50,7 +52,13 @@ def edit():
             redirect(URL('default', 'index'))
         # Always write invariants in your code.
         # Here, the invariant is that the checklist is known to exist.
+
+        # Let's update the last opened date.
+        cl.last_opened = datetime.datetime.utcnow()
+        cl.update_record()
+
         # Is this an edit form?
+
         is_edit = (request.vars.edit == 'true')
         form_type = 'edit' if is_edit else 'view'
         form = SQLFORM(db.checklist, record=cl, deletable=is_edit, readonly=not is_edit)
