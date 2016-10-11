@@ -13,7 +13,9 @@
     <div class="checklist_list text-center">
 
         {{for cl in checklists:}}
-            <div class="checklist_title text-left">{{=cl.title}}</div>
+            <a href="=URL('default', 'edit', args=[cl.id])" class="checklist_title">
+                <div class="checklist_title text-left">{{=cl.title}}</div>
+            </a>
         {{pass}}
 
     </div>
