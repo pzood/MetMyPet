@@ -35,15 +35,16 @@ def edit():
     """
     if request.args(0) is None:
         # request.args[0] would give an error if there is no argument 0.
-        form_type = 'create' # aaaagh, I am wasting computation! heat! global warming!
+        form_type = 'create'
         # We create a form for adding a new checklist item.  So far, the checklist items
         # are displayed in very rough form only.
         form = SQLFORM(db.checklist)
     else:
         # A checklist is specified.  We need to check that it exists, and that the user is the author.
         # We use .first() to get either the first element or None, rather than an iterator.
-        cl = db((db.checklist.user_email == auth.user.email) &
-                (db.checklist.id == request.args(0))).select().first()
+        q = ((db.checklist.user_email == auth.user.email) &
+             (db.checklist.id == request.args(0)))
+        cl = db(q).select().first()
         if cl is None:
             session.flash = T('Not Authorized')
             redirect(URL('default', 'index'))
@@ -70,7 +71,10 @@ def edit():
 
     if form.process().accepted:
         # At this point, the record has already been inserted.
-        session.flash = T('Checklist added.')
+        if form_type == 'create':
+            session.flash = T('Checklist added.')
+        else:
+            session.flash = T('Checklist edited.')
         redirect(URL('default', 'index'))
     elif form.errors:
         session.flash = T('Please enter correct values.')

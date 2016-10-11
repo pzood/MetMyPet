@@ -15,6 +15,7 @@ db.define_table('checklist',
                 )
 
 # I don't want to display the user email by default in all forms.
+db.checklist.id.readable = db.checklist.id.writable = False
 db.checklist.user_email.readable = db.checklist.user_email.writable = False
 db.checklist.title.requires = IS_NOT_EMPTY()
 
