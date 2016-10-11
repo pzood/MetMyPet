@@ -4,7 +4,7 @@
 {{if auth.user_id:}}
 
     <div class="text-right">
-        <a href="{{=URL('default', 'create_checklist')}}" class="btn btn-warning text-center">
+        <a href="{{=URL('default', 'edit')}}" class="btn btn-warning text-center">
             <i class="fa fa-plus"></i>New Checklist</a>
     </div>
 
@@ -13,7 +13,7 @@
     <div class="checklist_list text-center">
 
         {{for cl in checklists:}}
-            <a href="=URL('default', 'edit', args=[cl.id])" class="checklist_title">
+            <a href="{{=URL('default', 'edit', args=[cl.id])}}" class="checklist_title">
                 <div class="checklist_title text-left">{{=cl.title}}</div>
             </a>
         {{pass}}
