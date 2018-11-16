@@ -1,0 +1,36 @@
+{{extend 'layout.html'}}
+
+{{block head}}
+{{end}}
+
+<div class="main_content">
+
+  {{if auth.user is None:}}
+
+  <p>You are not logged in</p>
+
+  {{else:}}
+    <p>You are logged in</p>
+
+    <p>
+      <a href="{{=URL('default', 'add1')}}" class="btn">Add Post (method 1)</a>
+    </p>
+    <p>
+      <a href="{{=URL('default', 'add2')}}" class="btn">Add Post (method 2)</a>
+    </p>
+    <p>
+      {{=A('Add Post (method 3)', _href=URL('default', 'add3'), _class='btn')}}
+    </p>
+  {{pass}}
+
+  {{for r in rows:}}
+  <div>
+    <p>Author: {{=r.post_author}}</p>
+    <p>Title: {{=r.post_title}}</p>
+    <p>Content: {{=r.post_content}}</p>
+  </div>
+
+  {{pass}}
+
+</div>
+
