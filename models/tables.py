@@ -17,14 +17,31 @@ def get_user_email():
 def get_current_time():
     return datetime.datetime.utcnow()
 
-db.define_table('post',
-                Field('post_author', default=get_user_email()),
-                Field('post_title'),
-                Field('post_content', 'text'),
-                Field('post_time', 'datetime', update=get_current_time()),
+db.define_table('profile',
+                Field('userID', 'references auth_user'),
+                Field('contact_info', 'text', default=get_user_email()),
+                Field('zip', 'int'),
+                Field('last_update', 'datetime', update=get_current_time()),
                 )
 
-db.post.post_time.readable = db.post.post_time.writable = False
-db.post.post_author.writable = False
+db.define_table('sitter',
+                Field('profileID', 'references profile'),
+                Field('description', 'text'),
+                Field('rating', 'int'),
+                )
+
+db.define_table('pet_owner',
+                Field('profileID', 'references profile'),
+                Field('description', 'text'),
+                Field('rating', 'int'),
+                )
+
+db.define_table('pet',
+                Field('profileID', 'references profile'),
+                Field('name', 'text'),
+                Field('species', 'text'),
+                Field('description', 'text'),
+                Field('rating', 'int'),
+                )
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
