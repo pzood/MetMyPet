@@ -20,20 +20,18 @@ def get_current_time():
 db.define_table('profile',
                 Field('userID', 'references auth_user'),
                 Field('contact_info', 'text', default=get_user_email()),
-                Field('zip', 'int'),
+                Field('city', 'text'),
                 Field('last_update', 'datetime', update=get_current_time()),
                 )
 
 db.define_table('sitter',
                 Field('profileID', 'references profile'),
                 Field('description', 'text'),
-                Field('rating', 'int'),
                 )
 
 db.define_table('pet_owner',
                 Field('profileID', 'references profile'),
                 Field('description', 'text'),
-                Field('rating', 'int'),
                 )
 
 db.define_table('pet',
@@ -41,7 +39,20 @@ db.define_table('pet',
                 Field('name', 'text'),
                 Field('species', 'text'),
                 Field('description', 'text'),
+                )
+
+db.define_table('sitter_review',
+                Field('reviewerID', 'references profile'),
+                Field('revieweeID', 'references profile'),
                 Field('rating', 'int'),
+                Field('content', 'text'),
+                )
+
+db.define_table('owner_review',
+                Field('reviewerID', 'references profile'),
+                Field('revieweeID', 'references profile'),
+                Field('rating', 'int'),
+                Field('content', 'text'),
                 )
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
