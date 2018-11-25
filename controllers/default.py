@@ -8,6 +8,12 @@
 # - download is for downloading files uploaded in the db (does streaming)
 # -------------------------------------------------------------------------
 
+import logging
+
+# set up debug logger
+log = logging.getLogger("trunko")
+log.setLevel(logging.DEBUG)
+
 def index():
 
     if auth.user is None:
