@@ -26,13 +26,13 @@ db.define_table('profile',
 
 db.define_table('sitter',
                 Field('profileID', 'references profile'),
-                Field('active', 'boolean'),
+                Field('live', 'boolean'),
                 Field('description', 'text'),
                 )
 
 db.define_table('pet_owner',
                 Field('profileID', 'references profile'),
-                Field('active', 'boolean'),
+                Field('live', 'boolean'),
                 Field('description', 'text'),
                 )
 
