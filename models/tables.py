@@ -46,15 +46,15 @@ db.define_table('pet',
 db.define_table('sitter_review',
                 Field('reviewerID', 'references profile'),
                 Field('revieweeID', 'references profile'),
-                Field('rating', 'int'),
-                Field('content', 'text'),
+                Field('rating', 'integer'),
+                Field('feedback', 'text'),
                 )
 
 db.define_table('owner_review',
                 Field('reviewerID', 'references profile'),
                 Field('revieweeID', 'references profile'),
-                Field('rating', 'int'),
-                Field('content', 'text'),
+                Field('rating', 'integer'),
+                Field('feedback', 'text'),
                 )
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
