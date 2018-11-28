@@ -25,8 +25,22 @@
         </span>
     </div>
 </div>
-<script src="{{=URL('static', 'js/splash.js')}}"></script>
 
 {{else:}}
-ohaider
+<div id="main">
+	<div v-if="state === 'home'">
+		${state}
+	</div>
+	<div v-if="state === 'profile'">
+		${state}
+	</div>
+	<div v-if="state === 'editProfile'">
+		edit profile
+	</div>
+	<div v-if="state === 'listings'">
+		listings
+	</div>
+</div>
 {{pass}}
+
+<script src="{{=URL('static', 'js/default_index.js')}}"></script>
