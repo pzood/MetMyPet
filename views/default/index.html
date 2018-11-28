@@ -3,8 +3,30 @@
 {{block head}}
 {{end}}
 
-<div class="main_content">
-
-
+{{if auth.user is None:}}
+<div id="body" style="width:100vw;height:100vh">
+    <div id="title">
+        <div>PETMET</div>
+    </div>
+    <div id="content" class="container">
+        <span class="half">
+            <p>Do you see banana man?
+            Hopping over on de white hot sand
+            Here he come with some for me
+            Freshly taken from banana tree
+            Banana man, me want a ton
+            Gimme double and a bonus one
+            Gimme more for all me friends
+            Dis banana flow will never end</p>
+        </span>
+        <span class="half">
+            <a class="btn padded" style="width:200px" href="{{=URL('default', 'user/login')}}">Log In</a>
+            <a class="btn padded" style="width:200px" href="{{=URL('default', 'user/register')}}">Sign Up</a>
+        </span>
+    </div>
 </div>
+<script src="{{=URL('static', 'js/splash.js')}}"></script>
 
+{{else:}}
+ohaider
+{{pass}}
