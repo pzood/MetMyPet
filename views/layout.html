@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <link href="{{=URL('static','css/bootstrap.css')}}" rel="stylesheet" type="text/css"/>
-    <link href="{{=URL('static','css/stupid.css')}}" rel="stylesheet" type="text/css"/>
+    <!--<link href="{{=URL('static','css/stupid.css')}}" rel="stylesheet" type="text/css"/>-->
     <link href="{{=URL('static','css/custom.css')}}" rel="stylesheet" type="text/css"/>
     <link href="{{=URL('static','css/calendar.css')}}" rel="stylesheet" type="text/css"/>
     <link href="{{=URL('static','css/web2py.css')}}" rel="stylesheet" type="text/css"/>
@@ -19,37 +19,9 @@
       {{=response.flash}}
     </div>
     {{pass}}
-    <header class="black padded">
-      <div class="container middle max900">
-        <div class="fill middle">
-          <label class="ham padded fa fa-bars" for="menu"></label>
-          <div class="burger accordion">
-            <input type="checkbox" id="menu"/>
-            {{=MENU(response.menu,_class='menu')}}
-            <ul class="menu right">
-              <li>
-                {{=auth.navbar(mode='dropdown')}}
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </header>
     <main class="white">
       {{include}}
     </main>
-    <footer class="black">
-      <div class="silver center padded social">
-        <a class="fa fa-facebook" href="https://www.facebook.com/sharer/sharer.php?u={url}"></a>
-        <a class="fa fa-twitter" href="https://twitter.com/home?status={url}"></a>
-        <a class="fa fa-google" href="https://plus.google.com/share?url={url}"></a>
-      </div>
-      <div class="container padded max900">
-        <div class="fill">
-          Copyright @ 2016
-        </div>
-      </div>
-    </footer>
   </body>
   <script src="{{=URL('static','js/marked.min.js')}}"></script>
   <script src="{{=URL('static','js/vue.min.js')}}"></script>

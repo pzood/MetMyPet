@@ -13,6 +13,11 @@ var app = function() {
         }
     };
 
+    self.change_state = function(state_name) {
+        self.vue.state = state_name;
+        alert('woop');
+    }
+
     // Complete as needed.
     self.vue = new Vue({
         el: "#main",
@@ -22,9 +27,11 @@ var app = function() {
             state: 'home'
         },
         methods: {
+            change_state: self.change_state
         }
 
     });
+
 
 
     return self;
