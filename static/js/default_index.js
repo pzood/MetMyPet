@@ -19,9 +19,16 @@ var app = function() {
         delimiters: ['${', '}'],
         unsafeDelimiters: ['!{', '}'],
         data: {
-            state: 'home'
+            state: 'home',
+            sitter_description: "",
+            owner_description: "",
+            profile_list: [],
         },
         methods: {
+            make_profile: self.make_profile,
+            add_sitter: self.add_sitter,
+            add_owner: self.add_owner,
+            add_pet: self.add_pet,
         }
 
     });
