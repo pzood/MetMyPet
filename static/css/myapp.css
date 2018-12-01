@@ -50,3 +50,9 @@ div.main_content {
 .buttonPalm{
     padding: 60px;
 }
+
+#backButton{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}

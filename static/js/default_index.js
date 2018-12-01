@@ -15,7 +15,7 @@ var app = function() {
 
     self.change_state = function(state_name) {
         self.vue.state = state_name;
-        alert('woop');
+        //alert('woop');
     }
 
     // Complete as needed.
