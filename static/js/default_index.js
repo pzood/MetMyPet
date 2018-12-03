@@ -80,13 +80,13 @@ var app = function() {
     };
 
     self.add_owner = function(p_idx) {
-        var new_sitter= {
+        var new_owner= {
             profile_id: self.vue.profile_list[p_idx].id;
             description: self.vue.profile_list[p_idx].sitter_description;
         };
-        $.post(add_sitter_URL, new_sitter, function(response)
+        $.post(add_sitter_URL, new_owner, function(response)
         {
-            new_sitter['id']=response.id;
+            new_owner['id']=response.id;
             self.vue.profile_list[p_idx].sitter_list.unshift(new_sitter);
             self.process_sitter(p_idx);
         });
