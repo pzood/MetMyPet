@@ -1,5 +1,10 @@
 {{extend 'layout.html'}}
-
+<script src="{{=URL('static', 'js/vue.js')}}"></script>
+<script>
+    var make_profile_URL = "{{=URL('api', 'make_profile', user_signature=True)}}";
+    var add_sitter_URL = "{{=URL('api', 'add_sitter', user_signature=True)}}";
+    var add_owner_URL = "{{=URL('api', 'add_owner', user_signature=True)}}";
+</script>
 {{block head}}
 {{end}}
 

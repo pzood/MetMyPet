@@ -84,7 +84,7 @@ var app = function() {
             profile_id: self.vue.profile_list[p_idx].id;
             description: self.vue.profile_list[p_idx].sitter_description;
         };
-        $.post(add_sitter_URL, new_owner, function(response)
+        $.post(add_owner_URL, new_owner, function(response)
         {
             new_owner['id']=response.id;
             self.vue.profile_list[p_idx].sitter_list.unshift(new_sitter);
@@ -102,8 +102,6 @@ var app = function() {
             contact: "",
             profile_name: "",
             city_name: "",
-            sitter_description: "",
-            owner_description: "",
             profile_list: [],
         },
         methods: {
