@@ -55,14 +55,14 @@ var app = function() {
     self.process_sitter = function(p_idx) {
         enumrate(self.vue.profile_list[p_idx].sitter_list);
         self.vue.profile_list[p_idx].sitter_list.map(function(e) {
-            Vue.set(se, 'isLive', e.live);
+            Vue.set(e, 'isLive', e.live);
         });
     };
 
     self.process_owners = function(p_idx) {
         enumrate(self.vue.profile_list[p_idx].owner_list);
         self.vue.profile_list[p_idx].owner_list.map(function(e) {
-            Vue.set(se, 'isLive', e.live);
+            Vue.set(e, 'isLive', e.live);
         });
     };
 
