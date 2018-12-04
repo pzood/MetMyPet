@@ -2,6 +2,10 @@
 {{block head}}
 {{end}}
 
+<script>
+    var get_profiles_list_url = "{{=URL('api', 'get_profiles_list')}}";
+</script>
+
 {{if auth.user is None:}}
 <div id="splash_background" style="width:100vw;height:100vh">
     <div id="splash_title">
