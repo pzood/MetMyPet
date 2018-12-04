@@ -12,7 +12,7 @@ def make_profile():
 @auth.requires_signature()
 def add_sitter():
 	sitter_id = db.sitter.insert(
-		profile_id = request.vars.profile_id,
+		profileID = request.vars.profileID,
 	    live = request.vars.live,
 	    description = request.vars.description,
 	)
@@ -22,7 +22,7 @@ def add_sitter():
 @auth.requires_signature()
 def add_owner():
 	owner_id = db.pet_owner.insert(
-		profile_id = request.vars.profile_id,
+		profileID= request.vars.profileID,
 	    live = request.vars.live,
 	    description = request.vars.description,
 	)
@@ -32,7 +32,8 @@ def add_owner():
 @auth.requires_signature()
 def add_pet():
 	pet_entry = db.pet.insert(
-	    name = request.vars.name,
+		ownerID = request.vars.ownerID,
+	    pet_name = request.vars.pet_name,
 	    species = request.vars.species,
 	    description = request.vars.description
 	)

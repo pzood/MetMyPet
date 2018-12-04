@@ -62,13 +62,15 @@ var app = function() {
     self.process_owners = function(p_idx) {
         enumrate(self.vue.profile_list[p_idx].owner_list);
         self.vue.profile_list[p_idx].owner_list.map(function(e) {
+            Vue.set(e, 'pet_list', []);
+            Vue.set(e, 'pet_description', "");
             Vue.set(e, 'isLive', e.live);
         });
     };
 
     self.add_sitter = function(p_idx) {
         var new_sitter= {
-            profile_id: self.vue.profile_list[p_idx].id;
+            profileID: self.vue.profile_list[p_idx].id;
             description: self.vue.profile_list[p_idx].sitter_description;
         };
         $.post(add_sitter_URL, new_sitter, function(response)
@@ -77,12 +79,13 @@ var app = function() {
             self.vue.profile_list[p_idx].sitter_list.unshift(new_sitter);
             self.process_sitter(p_idx);
         });
+        self.vue.profile_list[p_idx].sitter_description="";
     };
 
     self.add_owner = function(p_idx) {
         var new_owner= {
-            profile_id: self.vue.profile_list[p_idx].id;
-            description: self.vue.profile_list[p_idx].sitter_description;
+            profileID: self.vue.profile_list[p_idx].id;
+            description: self.vue.profile_list[p_idx].owner_description;
         };
         $.post(add_owner_URL, new_owner, function(response)
         {
@@ -90,6 +93,23 @@ var app = function() {
             self.vue.profile_list[p_idx].sitter_list.unshift(new_sitter);
             self.process_sitter(p_idx);
         });
+        self.vue.profile_list[p_idx].owner_description="";
+    };
+
+    self.add_pet = function(p_idx, o_idx) {
+        var o = self.vue.profile_list[p_idx].owner_list[o_idx];
+        var new_pet = {
+            ownerID: o.id,
+            pet_name: o.pet_name,
+            species: o.species,
+            description: o.pet_description,
+        };
+        $.post(add_pet_URL, new_pet, function(response) {
+            new_pet['id']=response.id;
+            o.unshift(new_pet);
+            self.process_owners(p_idx);
+        });
+        o.pet_description="";
     };
 
     // Complete as needed.

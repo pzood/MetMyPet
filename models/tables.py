@@ -38,7 +38,7 @@ db.define_table('pet_owner',
                 )
 
 db.define_table('pet',
-                Field('profileID', 'references profile'),
+                Field('ownerID', 'references owner'),
                 Field('name', 'text'),
                 Field('species', 'text'),
                 Field('description', 'text'),
