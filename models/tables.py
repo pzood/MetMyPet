@@ -19,7 +19,8 @@ def get_current_time():
 
 db.define_table('profile',
                 Field('userID', 'references auth_user'),
-                Field('name', 'text'),
+                Field('first_name', 'text'),
+                Field('last_name', 'text'),
                 Field('contact_info', 'text', default=get_user_email()),
                 Field('city', 'text'),
                 Field('last_update', 'datetime', update=get_current_time()),
@@ -38,8 +39,8 @@ db.define_table('pet_owner',
                 )
 
 db.define_table('pet',
-                Field('ownerID', 'references owner'),
-                Field('name', 'text'),
+                Field('ownerID', 'references pet_owner'),
+                Field('pet_name', 'text'),
                 Field('species', 'text'),
                 Field('description', 'text'),
                 )

@@ -1,11 +1,11 @@
 {{extend 'layout.html'}}
+{{block head}}
 <script src="{{=URL('static', 'js/vue.js')}}"></script>
 <script>
     var make_profile_URL = "{{=URL('api', 'make_profile', user_signature=True)}}";
     var add_sitter_URL = "{{=URL('api', 'add_sitter', user_signature=True)}}";
     var add_owner_URL = "{{=URL('api', 'add_owner', user_signature=True)}}";
 </script>
-{{block head}}
 {{end}}
 
 {{if auth.user is None:}}
@@ -33,18 +33,55 @@
 
 {{else:}}
 
+<div id="vue-div">
+    <div class="left half compressible">
+        <div class="container form_row padded">
+            <div class="label quarter">
+                First Name:
+            </div>
+            <div class="form threequarters">
+                <input v-model="fname"/>
+            </div>
+        </div>
+        <div class="container form_row padded">
+            <div class="label quarter">
+                Last Name:
+            </div>
+            <div class="form threequarters">
+                <input v-model="lname"/>
+            </div>
+        </div>
+        <div class="container form_row padded">
+            <div class="label quarter">
+                Contact Info:
+            </div>
+            <div class="form threequarters">
+                <input v-model="contact" placeholder="Enter your email"/>
+            </div>
+        </div>
+        <div class="container form_row padded">
+            <div class="label quarter">
+                City:
+            </div>
+            <div class="form threequarters">
+                <input v-model="city_name" placeholder="Enter your city name"/>
+            </div>
+        </div>
+        <div class="container form_row padded"><div class="quarter"></div>
+            <div class="threequarters">
+                <button id="make-profile" v-on:click="make_profile">Submit</button>
+                <div v-on:click="fun">hello</div>
+            </div>
+        </div>
+    </div>
+</div>
 
-<div id="main">
+<!-- <div id="main">
 	<div v-if="state === 'home'">
 		${state}
 	</div>
 	<div v-if="state === 'profile'">
 		${state}
-        <!-- Click on profile, takes you to the settings page -->
-        <!-- Makes you add a profile if no profile -->
-        <div v-if="">
-            
-        </div>
 	</div>
 	<div v-if="state === 'editProfile'">
 		edit profile
@@ -52,7 +89,7 @@
 	<div v-if="state === 'listings'">
 		listings
 	</div>
-</div>
+</div> -->
 {{pass}}
 
 <script src="{{=URL('static', 'js/default_index.js')}}"></script>

@@ -2,11 +2,52 @@
 @auth.requires_signature()
 def make_profile():
 	profile_entry = db.profile.insert(
-		name = request.vars.name,
+		first_name = request.vars.first_name,
+		last_name = request.vars.last_name,
 		contact_info = auth.user_email,
 		city = request.vars.city,
 	)
+	console.logger("hello");
 	return response.JSON(dict(profile_entry=profile_entry))
+
+
+# def get_profiles():
+# 	results=[]
+# 	if auth.user is None:
+# 		rows = db().select(db.profile.ALL)
+# 		for row in rows:
+# 			get_results = (dict(
+# 				id=row.id,
+# 				name=row.name,
+# 				contact_info=row.contact_info,
+# 				city=row.city,
+# 				last_update=row.last_update,
+# 			))
+# 			results.append(get_results)
+# 	else:
+# 		rows = db().select(db.auth_user.ALL, 
+# 		                db.profile.ALL, 
+# 		                join=[
+# 		                    db.auth_user.on(db.auth_user.id=db.profile.userID), 
+# 		                    db.profile.on(db.profile.id==db.owner.profileID && db.profile.id==db.sitter.profileID),
+# 		                ])
+		
+
+# def get_owners():
+# 	rows = db().select(db.auth_user.ALL, db.profile.ALL, db.owner.ALL, 
+# 		               join=[
+# 		                    db.auth_user.on(db.auth_user.id=db.profile.userID), 
+# 		                    db.profile.on(db.profile.id==db.owner.profileID),
+# 		                ])
+
+
+# def get_sitters():
+# 	rows = db().select(db.auth_user.ALL, db.profile.ALL, db.sitter.ALL, 
+# 		               join=[
+# 		                    db.auth_user.on(db.auth_user.id=db.profile.userID), 
+# 		                    db.profile.on(db.profile.id==db.sitter.profileID),
+# 		                ])
+
 
 # for sitter form
 @auth.requires_signature()
@@ -32,7 +73,7 @@ def add_owner():
 @auth.requires_signature()
 def add_pet():
 	pet_entry = db.pet.insert(
-		ownerID = request.vars.ownerID,
+		ownerID = request.vars.pet_owner.id,
 	    pet_name = request.vars.pet_name,
 	    species = request.vars.species,
 	    description = request.vars.description

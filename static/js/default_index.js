@@ -17,29 +17,37 @@ var app = function() {
     var enumerate = function(v) { var k=0; return v.map(function(e) {e._idx = k++;});};
 
     self.make_profile = function() {
-        var sent_name = self.vue.profile_name;
+        console.log("yo");
+        $.web2py.disableElement($("#make-profile"));
+        var sent_fname = self.vue.fname;
+        var sent_lname = self.vue.lname;
         var sent_info = self.vue.contact;
         var sent_city = self.vue.city_name;
         $.post(make_profile_URL,
             {
-                name: self.vue.profile_name,
+                first_name: self.vue.fname,
+                last_name: self.vue.lname,
                 contact_info: self.vue.contact,
-                sent_city: self.vue.city_name,
+                city: self.vue.city_name,
             },
             function(data) {
-                self.vue.profile_name="";
+                $.web2py.enableElement($("#make-profile"));
+                self.vue.fname="";
+                self.vue.lname="";
                 self.vue.contact="";
                 self.vue.city_name="";
                 var new_profile = {
                     id: data.profile_entry.id,
-                    name: sent_name,
+                    first_name: sent_fname,
+                    last_name: sent_lname,
                     contact_info: sent_info,
-                    sent_city: sent_city,
+                    city: sent_city,
                 };
                 self.vue.profile_entry.unshift(new_profile);
                 self.process_profiles();
             }
         );
+        console.log("end input");
     };
 
     self.process_profiles = function() {
@@ -70,8 +78,8 @@ var app = function() {
 
     self.add_sitter = function(p_idx) {
         var new_sitter= {
-            profileID: self.vue.profile_list[p_idx].id;
-            description: self.vue.profile_list[p_idx].sitter_description;
+            profileID: self.vue.profile_list[p_idx].id,
+            description: self.vue.profile_list[p_idx].sitter_description,
         };
         $.post(add_sitter_URL, new_sitter, function(response)
         {
@@ -84,13 +92,13 @@ var app = function() {
 
     self.add_owner = function(p_idx) {
         var new_owner= {
-            profileID: self.vue.profile_list[p_idx].id;
-            description: self.vue.profile_list[p_idx].owner_description;
+            profileID: self.vue.profile_list[p_idx].id,
+            description: self.vue.profile_list[p_idx].owner_description,
         };
         $.post(add_owner_URL, new_owner, function(response)
         {
             new_owner['id']=response.id;
-            self.vue.profile_list[p_idx].sitter_list.unshift(new_sitter);
+            self.vue.profile_list[p_idx].owner_list.unshift(new_owner);
             self.process_sitter(p_idx);
         });
         self.vue.profile_list[p_idx].owner_description="";
@@ -112,6 +120,10 @@ var app = function() {
         o.pet_description="";
     };
 
+    self.fun = function () {
+        alert();
+    };
+
     // Complete as needed.
     self.vue = new Vue({
         el: "#main",
@@ -120,18 +132,22 @@ var app = function() {
         data: {
             state: 'home',
             contact: "",
-            profile_name: "",
+            fname: "",
+            lname: "",
             city_name: "",
             profile_list: [],
+            isAdding: false,
         },
         methods: {
             make_profile: self.make_profile,
             add_sitter: self.add_sitter,
             add_owner: self.add_owner,
             add_pet: self.add_pet,
+            is_user_adding: self.is_user_adding,
             process_profiles: self.process_profiles,
             process_sitter: self.process_sitter,
             process_owners: self.process_owners,
+            fun: self.fun
         }
     });
 
