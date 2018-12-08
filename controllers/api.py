@@ -2,13 +2,13 @@
 @auth.requires_signature()
 def make_profile():
 	profile_entry = db.profile.insert(
+		userID = auth.user.id,
 		first_name = request.vars.first_name,
 		last_name = request.vars.last_name,
-		contact_info = auth.user_email,
-		city = request.vars.city,
+		contact_info = request.vars.contact_info,
+		city = request.vars.city
 	)
-	console.logger("hello");
-	return response.JSON(dict(profile_entry=profile_entry))
+	return response.json(dict(profile_entry=profile_entry))
 
 
 # def get_profiles():

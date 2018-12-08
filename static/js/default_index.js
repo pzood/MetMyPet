@@ -37,13 +37,14 @@ var app = function() {
                 self.vue.contact="";
                 self.vue.city_name="";
                 var new_profile = {
-                    id: data.profile_entry.id,
+                    id: data.profile_entry,
                     first_name: sent_fname,
                     last_name: sent_lname,
                     contact_info: sent_info,
                     city: sent_city,
                 };
-                self.vue.profile_entry.unshift(new_profile);
+                console.log(new_profile);
+                self.vue.profile_list.unshift(new_profile);
                 self.process_profiles();
             }
         );
@@ -121,7 +122,7 @@ var app = function() {
     };
 
     self.fun = function () {
-        alert();
+        alert("hello");
     };
 
     // Complete as needed.
