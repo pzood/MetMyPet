@@ -1,11 +1,14 @@
 {{extend 'layout.html'}}
-
 {{block head}}
 {{end}}
 
+<script>
+    var get_profiles_list_url = "{{=URL('api', 'get_profiles_list')}}";
+</script>
+
 {{if auth.user is None:}}
-<div id="body" style="width:100vw;height:100vh">
-    <div id="title">
+<div id="splash_background" style="width:100vw;height:100vh">
+    <div id="splash_title">
         <div>PETMET</div>
     </div>
     <div id="content" class="container">
@@ -28,18 +31,51 @@
 
 {{else:}}
 <div id="main">
+<div id="splash_background" style="width:100vw;height:100vh">
 	<div v-if="state === 'home'">
-		${state}
+		<div id="content" class="container">
+    	
+    	
+        <h2>Probably Going to be Our Logo</h2>
+        
+        <button class="buttonPaw" v-on:click="change_state('profile')">Profile</button>
+        
+		
+		<button class="buttonPaw" v-on:click="change_state('owners')">Owners</button>
+		<button class="buttonPaw" v-on:click="change_state('sitters')">Sitters</button>
+		<button class="buttonPaw" v-on:click="change_state('search')">Search</button>
+		<button class="buttonPaw buttonPalm" v-on:click="change_state('contacts')">Contacts</button>
+		
+		<a class="btn padded" style="width:200px" href="{{=URL('default', 'user/logout')}}">Log Out</a>
+    	</div>
+	
 	</div>
 	<div v-if="state === 'profile'">
-		${state}
+		<div id="backButton">
+			<button v-on:click="change_state('home')">Back</button>
+			
+		</div>
+		
 	</div>
 	<div v-if="state === 'editProfile'">
-		edit profile
+		<div>
+			<button v-on:click="change_state('home')">Back</button>
+			edit profile
+		</div>
 	</div>
-	<div v-if="state === 'listings'">
-		listings
+	<div v-if="state === 'search'">
+		<div>
+			<button v-on:click="change_state('home')">Back</button>
+			search
+		</div>
 	</div>
+	<div v-if="state === 'contacts'">
+		<div>
+			<button v-on:click="change_state('home')">Back</button>
+			contacts
+		</div>
+	</div>	
+</div>
 </div>
 {{pass}}
 
