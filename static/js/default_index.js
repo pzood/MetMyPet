@@ -17,18 +17,19 @@ var app = function() {
     var enumerate = function(v) { var k=0; return v.map(function(e) {e._idx = k++;});};
 
     self.make_profile = function() {
-        console.log("yo");
         $.web2py.disableElement($("#make-profile"));
         var sent_fname = self.vue.fname;
         var sent_lname = self.vue.lname;
         var sent_info = self.vue.contact;
         var sent_city = self.vue.city_name;
-        $.post(make_profile_URL,
+        var sent_image = self.vue.image;
+        $.post(make_profile_url,
             {
                 first_name: self.vue.fname,
                 last_name: self.vue.lname,
                 contact_info: self.vue.contact,
                 city: self.vue.city_name,
+                image: self.vue.image,
             },
             function(data) {
                 $.web2py.enableElement($("#make-profile"));
@@ -36,18 +37,41 @@ var app = function() {
                 self.vue.lname="";
                 self.vue.contact="";
                 self.vue.city_name="";
+                self.vue.image=null;
                 var new_profile = {
-                    id: data.profile_entry.id,
+                    id: data.profile_entry,
                     first_name: sent_fname,
                     last_name: sent_lname,
                     contact_info: sent_info,
                     city: sent_city,
+                    image: sent_image,
                 };
-                self.vue.profile_entry.unshift(new_profile);
+                self.vue.profile_list.unshift(new_profile);
                 self.process_profiles();
+                console.log(sent_image);
             }
         );
-        console.log("end input");
+    };
+    self.image_changed = function(event){
+        var input = event.target;
+        var file = input.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.addEventListener('load', function () {
+                self.vue.image = reader.result 
+            }, false);
+            reader.readAsDataURL(file);
+        }
+    };
+
+    self.get_profiles = function(){
+        $.getJSON(get_profiles_url, function(data) {
+            self.vue.profile_list = data.profile_list;
+            self.process_profiles();
+            console.log("I got my list");
+            console.log(data.profile_list);
+        });
+        console.log("I fired the get");
     };
 
     self.process_profiles = function() {
@@ -57,8 +81,11 @@ var app = function() {
             Vue.set(e, 'sitter_description', "");
             Vue.set(e, 'owner_list', []);
             Vue.set(e, 'owner_description', "");
+            Vue.set(e, 'user_id', e.userID);
         });
     };
+
+
 
     self.process_sitter = function(p_idx) {
         enumrate(self.vue.profile_list[p_idx].sitter_list);
@@ -137,6 +164,7 @@ var app = function() {
             city_name: "",
             profile_list: [],
             isAdding: false,
+            image: null,
         },
         methods: {
             make_profile: self.make_profile,
@@ -147,11 +175,12 @@ var app = function() {
             process_profiles: self.process_profiles,
             process_sitter: self.process_sitter,
             process_owners: self.process_owners,
+            image_changed: self.image_changed,
             fun: self.fun
         }
     });
 
-
+    self.get_profiles();
     return self;
 };
 
