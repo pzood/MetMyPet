@@ -15,8 +15,12 @@ var app = function() {
 
     self.change_state = function(state_name) {
         self.vue.state = state_name;
-        //alert('woop');
-    }
+        
+    };
+
+    self.load_listings = function(state_name, data_to_load){
+        self.vue.state = state_name;
+    };
 
     // Complete as needed.
     self.vue = new Vue({
@@ -27,7 +31,8 @@ var app = function() {
             state: 'home'
         },
         methods: {
-            change_state: self.change_state
+            change_state: self.change_state,
+            load_listings: self.load_listings
         }
 
     });
