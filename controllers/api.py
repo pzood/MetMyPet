@@ -17,13 +17,13 @@ def get_profiles_list():
     for city in data:
         cities.append(city[1])
 
-    log.debug(get_sitters_list(cities))
+    log.debug(get_owners_list(cities))
     return "ok"
 
 # grab the sitters I need by city distance order
 def get_sitters_list(cities):
     set = db(db.auth_user.id == db.profile.userID)
-    set = set(db.profile.id == db.sitter.id)
+    set = set(db.profile.id == db.sitter.profileID)
     rows = []
 
     for city in cities:
@@ -39,5 +39,18 @@ def get_sitters_list(cities):
     return response.json(dict(rows=rows))
 
 
-def get_owners_list():
-    return response.json(dict())
+def get_owners_list(cities):
+    set = db(db.auth_user.id == db.profile.userID)
+    set = set(db.profile.id == db.pet_owner.profileID)
+    rows = []
+    for city in cities:
+        temp = set(db.profile.city == city)
+        temp = temp.select(db.auth_user.ALL, db.profile.ALL, db.pet_owner.ALL)
+
+        for row in temp :
+            id = row['profile']['id']
+            avgScore = db.owner_review.rating.avg()
+            row['score'] = db(db.owner_review.revieweeID == id).select(avgScore).first()[avgScore]
+            rows.append(row)
+
+    return response.json(dict(rows=rows))
