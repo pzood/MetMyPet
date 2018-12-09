@@ -18,12 +18,12 @@ var app = function() {
 
     self.make_profile = function() {
         $.web2py.disableElement($("#make-profile"));
-        var sent_fname = self.vue.fname;
-        var sent_lname = self.vue.lname;
-        var sent_info = self.vue.contact;
-        var sent_city = self.vue.city_name;
-        var sent_image = self.vue.image;
-        $.post(make_profile_url,
+        let sent_fname = self.vue.fname;
+        let sent_lname = self.vue.lname;
+        let sent_info = self.vue.contact;
+        let sent_city = self.vue.city_name;
+        let sent_image = self.vue.image;
+        $.post(make_profile_URL,
             {
                 first_name: self.vue.fname,
                 last_name: self.vue.lname,
@@ -38,7 +38,7 @@ var app = function() {
                 self.vue.contact="";
                 self.vue.city_name="";
                 self.vue.image=null;
-                var new_profile = {
+                let new_profile = {
                     id: data.profile_entry,
                     first_name: sent_fname,
                     last_name: sent_lname,
@@ -46,6 +46,7 @@ var app = function() {
                     city: sent_city,
                     image: sent_image,
                 };
+                console.log(new_profile);
                 self.vue.profile_list.unshift(new_profile);
                 self.process_profiles();
                 console.log(sent_image);
@@ -74,13 +75,37 @@ var app = function() {
         console.log("I fired the get");
     };
 
+    self.image_changed = function(event){
+        let input = event.target;
+        let file = input.files[0];
+        if (file) {
+            let reader = new FileReader();
+            reader.addEventListener('load', function () {
+                self.vue.image = reader.result 
+            }, false);
+            reader.readAsDataURL(file);
+        }
+    };
+
+    // self.get_profiles = function() {
+    //     $.getJSON(get_profiles_URL, function(data) {
+    //         self.vue.profile_list=data.profile_list;
+    //         console.log(data.profile_list);
+    //         self.process_profiles();
+    //         console.log("got list");
+    //     });
+    //     console.log("fired get");
+    // };
+
     self.process_profiles = function() {
         enumerate(self.vue.profile_list);
         self.vue.profile_list.map(function(e) {
             Vue.set(e, 'sitter_list', []);
             Vue.set(e, 'sitter_description', "");
+            Vue.set(e, 'isSitter', false);
             Vue.set(e, 'owner_list', []);
             Vue.set(e, 'owner_description', "");
+            Vue.set(e, 'isOwner', false);
             Vue.set(e, 'user_id', e.userID);
         });
     };
@@ -104,7 +129,7 @@ var app = function() {
     };
 
     self.add_sitter = function(p_idx) {
-        var new_sitter= {
+        let new_sitter= {
             profileID: self.vue.profile_list[p_idx].id,
             description: self.vue.profile_list[p_idx].sitter_description,
         };
@@ -112,13 +137,13 @@ var app = function() {
         {
             new_sitter['id']=response.id;
             self.vue.profile_list[p_idx].sitter_list.unshift(new_sitter);
-            self.process_sitter(p_idx);
+            self.process_sitter(p_idx);wa
         });
         self.vue.profile_list[p_idx].sitter_description="";
     };
 
     self.add_owner = function(p_idx) {
-        var new_owner= {
+        let new_owner= {
             profileID: self.vue.profile_list[p_idx].id,
             description: self.vue.profile_list[p_idx].owner_description,
         };
@@ -132,8 +157,8 @@ var app = function() {
     };
 
     self.add_pet = function(p_idx, o_idx) {
-        var o = self.vue.profile_list[p_idx].owner_list[o_idx];
-        var new_pet = {
+        let o = self.vue.profile_list[p_idx].owner_list[o_idx];
+        let new_pet = {
             ownerID: o.id,
             pet_name: o.pet_name,
             species: o.species,
@@ -147,8 +172,20 @@ var app = function() {
         o.pet_description="";
     };
 
+    self.edit_profile = function(p_idx) {
+        let p = self.vue.profile_list[p_idx];
+        $.post(edit_profile_URL, {
+            id: p.id,
+            first_name: p.first_name,
+            last_name: p.last_name,
+            contact_info: p.contact_info,
+            city: p.city,
+        });
+        console.log("updated");
+    };
+
     self.fun = function () {
-        alert();
+        alert("hello");
     };
 
     // Complete as needed.
@@ -163,7 +200,7 @@ var app = function() {
             lname: "",
             city_name: "",
             profile_list: [],
-            isAdding: false,
+            makingProfile: false,
             image: null,
         },
         methods: {
@@ -171,16 +208,18 @@ var app = function() {
             add_sitter: self.add_sitter,
             add_owner: self.add_owner,
             add_pet: self.add_pet,
+            image_changed: self.image_changed,
+            // get_profiles: self.get_profiles,
             is_user_adding: self.is_user_adding,
             process_profiles: self.process_profiles,
             process_sitter: self.process_sitter,
             process_owners: self.process_owners,
-            image_changed: self.image_changed,
-            fun: self.fun
+            edit_profile: self.edit_profile,
+            fun: self.fun,
         }
     });
+    // self.get_profiles();
 
-    self.get_profiles();
     return self;
 };
 

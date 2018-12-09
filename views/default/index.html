@@ -2,34 +2,26 @@
 {{block head}}
 <script src="{{=URL('static', 'js/vue.js')}}"></script>
 <script>
-   var make_profile_url = "{{=URL('api', 'make_profile', user_signature=True)}}";
-   var add_sitter_url = "{{=URL('api', 'add_sitter', user_signature=True)}}";
-   var add_owner_url = "{{=URL('api', 'add_owner', user_signature=True)}}";
-   var get_profiles_url = "{{=URL('api', 'get_profiles')}}";
+    var make_profile_URL = "{{=URL('api', 'make_profile', user_signature=True)}}";
+    var add_sitter_URL = "{{=URL('api', 'add_sitter', user_signature=True)}}";
+    var add_owner_URL = "{{=URL('api', 'add_owner', user_signature=True)}}";
+    var get_profiles_URL = "{{=URL('api', 'add_owner', user_signature=True)}}";
 </script>
 {{end}}
 {{if auth.user is None:}}
 <div id="body" style="width:100vw;height:100vh">
-   <div id="title">
-      <div>PETMET</div>
-   </div>
-   <div id="content" class="container">
-      <span class="half">
-         <p>Do you see banana man?
-            Hopping over on de white hot sand
-            Here he come with some for me
-            Freshly taken from banana tree
-            Banana man, me want a ton
-            Gimme double and a bonus one
-            Gimme more for all me friends
-            Dis banana flow will never end
-         </p>
-      </span>
-      <span class="half">
-      <a class="btn padded" style="width:200px" href="{{=URL('default', 'user/login')}}">Log In</a>
-      <a class="btn padded" style="width:200px" href="{{=URL('default', 'user/register')}}">Sign Up</a>
-      </span>
-   </div>
+    <div id="title">
+        <div>PETMET</div>
+    </div>
+    <div id="content" class="container">
+        <span class="half">
+            <p>Que Paso</p>
+        </span>
+        <span class="half">
+            <a class="btn padded" style="width:200px" href="{{=URL('default', 'user/login')}}">Log In</a>
+            <a class="btn padded" style="width:200px" href="{{=URL('default', 'user/register')}}">Sign Up</a>
+        </span>
+    </div>
 </div>
 {{else:}}
 <div id="main">
