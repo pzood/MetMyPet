@@ -55,6 +55,7 @@ var app = function() {
         console.log("end input");
     };
 
+    //javascript for holding the image and allow for it to be passed to database
     self.image_changed = function(event){
         let input = event.target;
         let file = input.files[0];
@@ -187,6 +188,7 @@ var app = function() {
             add_owner: self.add_owner,
             add_pet: self.add_pet,
             image_changed: self.image_changed,
+            return_profileid: self.return_profileid,
             // get_profiles: self.get_profiles,
             is_user_adding: self.is_user_adding,
             process_profiles: self.process_profiles,
