@@ -18,7 +18,7 @@ def get_profiles_list():
         cities.append(city[1])
 
     result = get_owners_list(cities)
-    log.debug(response.json(result))
+    log.debug(result)
     return "ok"
 
 # Get the sitters I need by city distance order
@@ -41,7 +41,7 @@ def get_sitters_list(cities):
             row['score'] = db(db.sitter_review.revieweeID == id).select(avgScore).first()[avgScore]
             rows.append(row)
 
-    return dict(rows=rows)
+    return response.json(dict(rows=rows))
 
 # Get the owners I need by city distance order
 def get_owners_list(cities):
@@ -61,7 +61,10 @@ def get_owners_list(cities):
             id = row['profile']['id']
             avgScore = db.owner_review.rating.avg()
             row['score'] = db(db.owner_review.revieweeID == id).select(avgScore).first()[avgScore]
-            row['pets'] = db(db.pet.profileID == id).select()
+            pets = db(db.pet.profileID == id).select()
+            row['pets'] = []
+            for pet in pets:
+                row['pets'].append(pet)
             rows.append(row)
 
-    return dict(rows=rows)
+    return response.json(dict(rows=rows))

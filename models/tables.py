@@ -46,14 +46,14 @@ db.define_table('pet',
 db.define_table('sitter_review',
                 Field('reviewerID', 'references profile'),
                 Field('revieweeID', 'references profile'),
-                Field('rating', 'integer'),
+                Field('rating', 'float'),
                 Field('feedback', 'text'),
                 )
 
 db.define_table('owner_review',
                 Field('reviewerID', 'references profile'),
                 Field('revieweeID', 'references profile'),
-                Field('rating', 'integer'),
+                Field('rating', 'float'),
                 Field('feedback', 'text'),
                 )
 # after defining tables, uncomment below to enable auditing
