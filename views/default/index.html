@@ -64,13 +64,15 @@
          </div>
       </div>
    </div>
-   <div class="container form_row padded"> 
-    <img v-if="image != null" v-bind:src="image" width="25%" height="45%"/><br>
-   <input type="file" v-on:change="image_changed($event)" accept="image/*"/>
-      <div class="quarter">
+   <div class="right half compressible">
+      <div class="container form_row padded">
+         <img v-if="image != null" v-bind:src="image" width="40%" height="40%" align="left"/><br>
+         <input type="file" v-on:change="image_changed($event)" accept="image/*"/>
+         <div class="quarter"></div>
       </div>
    </div>
 </div>
+
 <!-- <div id="main">
    <div v-if="state === 'home'">
     ${state}
