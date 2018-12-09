@@ -1,3 +1,5 @@
+import datetime
+
 # Here go your api methods.
 @auth.requires_signature()
 def make_profile():
@@ -6,10 +8,21 @@ def make_profile():
 		first_name = request.vars.first_name,
 		last_name = request.vars.last_name,
 		contact_info = request.vars.contact_info,
-		city = request.vars.city
+		image = request.vars.image,
+		city = request.vars.city,
 	)
 	return response.json(dict(profile_entry=profile_entry))
 
+@auth.requires_signature()
+def edit_profile():
+	db((db.profile.id==request.vars.id)&(db.profile.userID==auth.user.id)).update(
+		first_name=request.vars.first_name,
+		last_name=request.vars.last_name,
+		contact_info=request.vars.contact_info,
+		city=request.vars.city,
+		last_update=get_current_time(),
+	)
+	return "edited the profile"
 
 # def get_profiles():
 # 	results=[]
@@ -18,7 +31,8 @@ def make_profile():
 # 		for row in rows:
 # 			get_results = (dict(
 # 				id=row.id,
-# 				name=row.name,
+# 				first_name=row.first_name,
+# 				last_name=row.last_name,
 # 				contact_info=row.contact_info,
 # 				city=row.city,
 # 				last_update=row.last_update,
@@ -28,23 +42,33 @@ def make_profile():
 # 		rows = db().select(db.auth_user.ALL, 
 # 		                db.profile.ALL, 
 # 		                join=[
-# 		                    db.auth_user.on(db.auth_user.id=db.profile.userID), 
-# 		                    db.profile.on(db.profile.id==db.owner.profileID && db.profile.id==db.sitter.profileID),
+# 		                    db.auth_user.on(db.auth_user.id==db.profile.userID), 
+# 		                    db.profile.on((db.profile.id==db.pet_owner.profileID) & (db.profile.id==db.sitter.profileID)),
 # 		                ])
-		
+# 		for row in rows:
+# 			results.append(dict(
+# 				id=row.id,
+# 				first_name=row.first_name,
+# 				last_name=row.last_name,
+# 				contact_info=row.contact_info,
+# 				city=row.city,
+# 				last_update=row.last_update,
+# 			))
+# 	return response.json(dict(profile_list=results))
+
 
 # def get_owners():
 # 	rows = db().select(db.auth_user.ALL, db.profile.ALL, db.owner.ALL, 
 # 		               join=[
-# 		                    db.auth_user.on(db.auth_user.id=db.profile.userID), 
-# 		                    db.profile.on(db.profile.id==db.owner.profileID),
+# 		                    db.auth_user.on(db.auth_user.id==db.profile.userID), 
+# 		                    db.profile.on(db.profile.id==db.pet_owner.profileID),
 # 		                ])
 
 
 # def get_sitters():
 # 	rows = db().select(db.auth_user.ALL, db.profile.ALL, db.sitter.ALL, 
 # 		               join=[
-# 		                    db.auth_user.on(db.auth_user.id=db.profile.userID), 
+# 		                    db.auth_user.on(db.auth_user.id==db.profile.userID), 
 # 		                    db.profile.on(db.profile.id==db.sitter.profileID),
 # 		                ])
 
@@ -57,7 +81,7 @@ def add_sitter():
 	    live = request.vars.live,
 	    description = request.vars.description,
 	)
-	return response.JSON(dict(sitter_id=sitter_id))
+	return response.json(dict(sitter_id=sitter_id))
 
 # for owner form
 @auth.requires_signature()
@@ -67,7 +91,7 @@ def add_owner():
 	    live = request.vars.live,
 	    description = request.vars.description,
 	)
-	return response.JSON(dict(owner_id = owner_id))
+	return response.json(dict(owner_id = owner_id))
 
 #For adding pets (like replies)
 @auth.requires_signature()
@@ -78,4 +102,4 @@ def add_pet():
 	    species = request.vars.species,
 	    description = request.vars.description
 	)
-	return response.JSON(dict(pet_entry = pet_entry))
+	return response.json(dict(pet_entry = pet_entry))

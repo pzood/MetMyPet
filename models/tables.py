@@ -23,6 +23,7 @@ db.define_table('profile',
                 Field('last_name', 'text'),
                 Field('contact_info', 'text', default=get_user_email()),
                 Field('city', 'text'),
+                Field('image', 'upload'),
                 Field('last_update', 'datetime', update=get_current_time()),
                 )
 
