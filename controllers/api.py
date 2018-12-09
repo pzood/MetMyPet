@@ -77,7 +77,8 @@ def make_profile():
 # for sitter form
 @auth.requires_signature()
 def add_sitter():
-	sitter_id = db.sitter.insert(
+	sitter_id = db.sitter.update_or_insert(
+		db.sitter.profileID==db.profile.id,
 		profileID = request.vars.profileID,
 	    live = request.vars.live,
 	    description = request.vars.description,
@@ -87,7 +88,8 @@ def add_sitter():
 # for owner form
 @auth.requires_signature()
 def add_owner():
-	owner_id = db.pet_owner.insert(
+	owner_id = db.pet_owner.update_or_insert(
+		db.pet_owner.profileID==db.profile.id,
 		profileID= request.vars.profileID,
 	    live = request.vars.live,
 	    description = request.vars.description,
