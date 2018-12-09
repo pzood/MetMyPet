@@ -3,7 +3,8 @@ import datetime
 # Here go your api methods.
 @auth.requires_signature()
 def make_profile():
-	profile_entry = db.profile.insert(
+	profile_entry = db.profile.update_or_insert(
+		db.profile.userID==auth.user.id,
 		userID = auth.user.id,
 		first_name = request.vars.first_name,
 		last_name = request.vars.last_name,
@@ -13,16 +14,16 @@ def make_profile():
 	)
 	return response.json(dict(profile_entry=profile_entry))
 
-@auth.requires_signature()
-def edit_profile():
-	db((db.profile.id==request.vars.id)&(db.profile.userID==auth.user.id)).update(
-		first_name=request.vars.first_name,
-		last_name=request.vars.last_name,
-		contact_info=request.vars.contact_info,
-		city=request.vars.city,
-		last_update=get_current_time(),
-	)
-	return "edited the profile"
+# @auth.requires_signature()
+# def edit_profile():
+# 	db((db.profile.id==request.vars.id)&(db.profile.userID==auth.user.id)).update(
+# 		first_name=request.vars.first_name,
+# 		last_name=request.vars.last_name,
+# 		contact_info=request.vars.contact_info,
+# 		city=request.vars.city,
+# 		last_update=get_current_time(),
+# 	)
+# 	return "edited the profile"
 
 # def get_profiles():
 # 	results=[]
