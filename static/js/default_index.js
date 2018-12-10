@@ -16,7 +16,7 @@ var app = function () {
     // Enumerates an array.
     var enumerate = function (v) { var k = 0; return v.map(function (e) { e._idx = k++; }); };
 
-    self.make_profile = function () {
+    self.make_profile = function() {
         $.web2py.disableElement($("#make-profile"));
         let sent_fname = self.vue.fname;
         let sent_lname = self.vue.lname;
@@ -136,21 +136,21 @@ var app = function () {
         );
     };
 
-    self.add_pet = function (p_idx, o_idx) {
-        let o = self.vue.profile_list[p_idx].owner_list[o_idx];
-        let new_pet = {
-            ownerID: o.id,
-            pet_name: o.pet_name,
-            species: o.species,
-            description: o.pet_description,
-        };
-        $.post(add_pet_URL, new_pet, function (response) {
-            new_pet['id'] = response.id;
-            o.unshift(new_pet);
-            self.process_owners();
-        });
-        o.pet_description = "";
-    };
+    // self.add_pet = function(p_idx, o_idx) {
+    //     let o = self.vue.profile_list[p_idx].owner_list[o_idx];
+    //     let new_pet = {
+    //         ownerID: o.id,
+    //         pet_name: o.pet_name,
+    //         species: o.species,
+    //         description: o.pet_description,
+    //     };
+    //     $.post(add_pet_URL, new_pet, function(response) {
+    //         new_pet['id']=response.id;
+    //         o.unshift(new_pet);
+    //         self.process_owners(p_idx);
+    //     });
+    //     o.pet_description="";
+    // };
 
     self.edit_profile = function (p_idx) {
         let p = self.vue.profile_list[p_idx];
