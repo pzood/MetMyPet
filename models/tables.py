@@ -28,14 +28,16 @@ db.define_table('profile',
                 )
 
 db.define_table('sitter',
-                Field('profileID', 'references profile'),
-                Field('live', 'boolean'),
+                # Field('profileID', 'references profile'),
+                Field('userID', 'references auth_user'),
+                Field('live', 'boolean', default=True),
                 Field('description', 'text'),
                 )
 
 db.define_table('pet_owner',
-                Field('profileID', 'references profile'),
-                Field('live', 'boolean'),
+                # Field('profileID', 'references profile'),
+                Field('userID', 'references auth_user'),
+                Field('live', 'boolean', default=True),
                 Field('description', 'text'),
                 )
 

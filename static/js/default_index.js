@@ -1,22 +1,22 @@
 // This is the js for the default/index.html view.
 
-var app = function() {
+var app = function () {
 
     var self = {};
 
     Vue.config.silent = false; // show all warnings
 
     // Extends an array
-    self.extend = function(a, b) {
+    self.extend = function (a, b) {
         for (var i = 0; i < b.length; i++) {
             a.push(b[i]);
         }
     };
 
     // Enumerates an array.
-    var enumerate = function(v) { var k=0; return v.map(function(e) {e._idx = k++;});};
+    var enumerate = function (v) { var k = 0; return v.map(function (e) { e._idx = k++; }); };
 
-    self.make_profile = function() {
+    self.make_profile = function () {
         $.web2py.disableElement($("#make-profile"));
         let sent_fname = self.vue.fname;
         let sent_lname = self.vue.lname;
@@ -31,15 +31,15 @@ var app = function() {
                 city: self.vue.city_name,
                 image: self.vue.image,
             },
-            function(data) {
+            function (data) {
                 $.web2py.enableElement($("#make-profile"));
-                self.vue.fname="";
-                self.vue.lname="";
-                self.vue.contact="";
-                self.vue.city_name="";
-                self.vue.image=null;
+                self.vue.fname = "";
+                self.vue.lname = "";
+                self.vue.contact = "";
+                self.vue.city_name = "";
+                self.vue.image = null;
                 let new_profile = {
-                    id: data.profile_entry,
+                    id: data.profile_id,
                     first_name: sent_fname,
                     last_name: sent_lname,
                     contact_info: sent_info,
@@ -48,116 +48,95 @@ var app = function() {
                 };
                 console.log(new_profile);
                 self.vue.profile_list.unshift(new_profile);
-                self.process_profiles();
-                console.log(sent_image);
+                //self.process_profiles();
             }
         );
-    };
-    self.image_changed = function(event){
-        var input = event.target;
-        var file = input.files[0];
-        if (file) {
-            var reader = new FileReader();
-            reader.addEventListener('load', function () {
-                self.vue.image = reader.result 
-            }, false);
-            reader.readAsDataURL(file);
-        }
-    };
-
-    self.get_profiles = function(){
-        $.getJSON(get_profiles_url, function(data) {
-            self.vue.profile_list = data.profile_list;
-            self.process_profiles();
-            console.log("I got my list");
-            console.log(data.profile_list);
-        });
-        console.log("I fired the get");
+        console.log("end input");
     };
 
     //javascript for holding the image and allow for it to be passed to database
-    self.image_changed = function(event){
+    self.image_changed = function (event) {
         let input = event.target;
         let file = input.files[0];
         if (file) {
             let reader = new FileReader();
             reader.addEventListener('load', function () {
-                self.vue.image = reader.result 
+                self.vue.image = reader.result
             }, false);
             reader.readAsDataURL(file);
         }
     };
 
-    // self.get_profiles = function() {
-    //     $.getJSON(get_profiles_URL, function(data) {
-    //         self.vue.profile_list=data.profile_list;
-    //         console.log(data.profile_list);
+    // self.get_profiles = function () {
+    //     $.getJSON(get_profiles_URL, function (data) {
+    //         self.vue.profile_list = data.profile_list;
     //         self.process_profiles();
     //         console.log("got list");
     //     });
     //     console.log("fired get");
     // };
 
-    self.process_profiles = function() {
-        enumerate(self.vue.profile_list);
-        self.vue.profile_list.map(function(e) {
-            Vue.set(e, 'sitter_list', []);
-            Vue.set(e, 'sitter_description', "");
-            Vue.set(e, 'isSitter', false);
-            Vue.set(e, 'owner_list', []);
-            Vue.set(e, 'owner_description', "");
-            Vue.set(e, 'isOwner', false);
-            Vue.set(e, 'user_id', e.userID);
-        });
+    // self.process_profiles = function () {
+    //     enumerate(self.vue.profile_list);
+    //     self.vue.profile_list.map(function (e) {
+    //         Vue.set(e, 'isSitter', false);
+    //         Vue.set(e, 'isOwner', false);
+    //     });
+    // };
+
+    // self.process_sitters = function () {
+    //     enumrate(self.vue.sitter_list);
+    //     self.vue.sitter_list.map(function (e) {
+    //         Vue.set(e, 'isLive', e.live);
+    //     });
+    // };
+
+    // self.process_owners = function () {
+    //     enumrate(self.vue.owner_list);
+    //     self.vue.owner_list.map(function (e) {
+    //         Vue.set(e, 'pet_list', []);
+    //         Vue.set(e, 'pet_description', "");
+    //         Vue.set(e, 'isLive', e.live);
+    //     });
+    // };
+
+    self.add_sitter = function() {
+        console.log("add_sitter called");
+        let sent_sitter_descript = self.vue.sitter_description;
+        $.post(add_sitter_URL, {
+                description: sent_sitter_descript,
+                live: true,
+            }, function(data) {
+                self.vue.sitter_description="";
+                let new_sitter = {
+                    id: data.sitter_id,
+                    description: sent_sitter_descript,
+                };
+                self.vue.sitter_list.unshift(new_sitter);
+                //self.process_sitters();
+            }
+        );
     };
 
-
-
-    self.process_sitter = function(p_idx) {
-        enumrate(self.vue.profile_list[p_idx].sitter_list);
-        self.vue.profile_list[p_idx].sitter_list.map(function(e) {
-            Vue.set(e, 'isLive', e.live);
-        });
+    self.add_owner = function() {
+        console.log("add_owner called");
+        let sent_owner_descript = self.vue.owner_description
+        $.post(add_owner_URL, {
+                description: sent_owner_descript,
+                live: true,
+            }, function(data) {
+                self.vue.owner_description="";
+                let new_owner = {
+                    id: data.owner_id,
+                    description: sent_owner_descript,
+                };
+                self.vue.owner_list.unshift(new_owner);
+                //self.process_owners();
+            }
+        );
     };
 
-    self.process_owners = function(p_idx) {
-        enumrate(self.vue.profile_list[p_idx].owner_list);
-        self.vue.profile_list[p_idx].owner_list.map(function(e) {
-            Vue.set(e, 'pet_list', []);
-            Vue.set(e, 'pet_description', "");
-            Vue.set(e, 'isLive', e.live);
-        });
-    };
-
-    self.add_sitter = function(p_idx) {
-        let new_sitter= {
-            profileID: self.vue.profile_list[p_idx].id,
-            description: self.vue.profile_list[p_idx].sitter_description,
-        };
-        $.post(add_sitter_URL, new_sitter, function(response)
-        {
-            new_sitter['id']=response.id;
-            self.vue.profile_list[p_idx].sitter_list.unshift(new_sitter);
-            self.process_sitter(p_idx);wa
-        });
-        self.vue.profile_list[p_idx].sitter_description="";
-    };
-
-    self.add_owner = function(p_idx) {
-        let new_owner= {
-            profileID: self.vue.profile_list[p_idx].id,
-            description: self.vue.profile_list[p_idx].owner_description,
-        };
-        $.post(add_owner_URL, new_owner, function(response)
-        {
-            new_owner['id']=response.id;
-            self.vue.profile_list[p_idx].owner_list.unshift(new_owner);
-            self.process_sitter(p_idx);
-        });
-        self.vue.profile_list[p_idx].owner_description="";
-    };
-
-    self.add_pet = function(p_idx, o_idx) {
+    self.add_pet = function (p_idx, o_idx) {
         let o = self.vue.profile_list[p_idx].owner_list[o_idx];
         let new_pet = {
             ownerID: o.id,
@@ -165,15 +144,15 @@ var app = function() {
             species: o.species,
             description: o.pet_description,
         };
-        $.post(add_pet_URL, new_pet, function(response) {
-            new_pet['id']=response.id;
+        $.post(add_pet_URL, new_pet, function (response) {
+            new_pet['id'] = response.id;
             o.unshift(new_pet);
-            self.process_owners(p_idx);
+            self.process_owners();
         });
-        o.pet_description="";
+        o.pet_description = "";
     };
 
-    self.edit_profile = function(p_idx) {
+    self.edit_profile = function (p_idx) {
         let p = self.vue.profile_list[p_idx];
         $.post(edit_profile_URL, {
             id: p.id,
@@ -189,6 +168,39 @@ var app = function() {
         alert("hello");
     };
 
+    self.change_state = function (state_name) {
+        self.vue.state = state_name;
+    };
+
+    self.toggle_sitter_form = function () {
+        self.vue.show_sitter_form = !self.vue.show_sitter_form;
+        self.vue.show_owner_form = false;
+        self.vue.show_both_form = false;
+    };
+
+    self.toggle_owner_form = function () {
+        self.vue.show_owner_form = !self.vue.show_owner_form;
+        self.vue.show_sitter_form = false;
+        self.vue.show_both_form = false;
+    };
+
+    self.toggle_both_form = function () {
+        self.vue.show_both_form = !self.vue.show_both_form;
+        self.vue.show_owner_form = false;
+        self.vue.show_sitter_form = false;
+    };
+
+    //checkBlur() takes care of de-highlighting the radio buttons when we ask the 
+    //user to input owner and sitter decription.
+    self.checkBlur = function () {
+        if (!self.vue.show_both_form && !self.vue.show_sitter_form && !self.vue.show_owner_form) {
+            document.getElementById('inlineRadio1').checked = false;
+            document.getElementById('inlineRadio2').checked = false;
+            document.getElementById('inlineRadio3').checked = false;
+        }
+    };
+
+
     // Complete as needed.
     self.vue = new Vue({
         el: "#main",
@@ -201,8 +213,15 @@ var app = function() {
             lname: "",
             city_name: "",
             profile_list: [],
+            sitter_list: [],
+            sitter_description: "",
+            owner_list: [],
+            owner_description: "",
             makingProfile: false,
             image: null,
+            show_sitter_form: false,
+            show_owner_form: false,
+            show_both_form: false,
         },
         methods: {
             make_profile: self.make_profile,
@@ -213,11 +232,17 @@ var app = function() {
             return_profileid: self.return_profileid,
             // get_profiles: self.get_profiles,
             is_user_adding: self.is_user_adding,
-            process_profiles: self.process_profiles,
+            //process_profiles: self.process_profiles,
             process_sitter: self.process_sitter,
             process_owners: self.process_owners,
             edit_profile: self.edit_profile,
             fun: self.fun,
+            toggle_owner_form: self.toggle_owner_form,
+            toggle_sitter_form: self.toggle_sitter_form,
+            toggle_both_form: self.toggle_both_form,
+            checkBlur: self.checkBlur,
+            extend: self.extend,
+            enumerate: self.enumerate,
         }
     });
     // self.get_profiles();
@@ -229,4 +254,4 @@ var APP = null;
 
 // This will make everything accessible from the js console;
 // for instance, self.x above would be accessible as APP.x
-jQuery(function(){APP = app();});
+jQuery(function () { APP = app(); });
