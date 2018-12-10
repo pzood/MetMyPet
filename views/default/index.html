@@ -29,7 +29,7 @@
 <div id="main">
 <div id="splash_background" style="width:100vw;height:100vh">
 	<div v-if="state === 'home'">
-		<div id="content" class="container">
+		<div id="pawPage" class="container">
     	
     	
         <h2>Probably Going to be Our Logo</h2>
@@ -62,39 +62,43 @@
 	<div v-if="state === 'listings'">
 		<div>
 			<div class="container">
-			  <h2>Variable that displays the search parameters</h2>
+			  <h2>This is going to be our search page</h2>
 			  <div class="row">
 		<div class="col-md-12">
             <div class="input-group" id="adv-search">
-                <input type="text" class="form-control" placeholder="Search" />
+                <input type="text" class="form-control" placeholder="Location" />
                 <div class="input-group-btn">
                     <div class="btn-group" role="group">
                         <div class="dropdown dropdown-lg">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"></button>
                             <div class="dropdown-menu dropdown-menu-right" role="menu">
                                 <form class="form-horizontal" role="form">
                                   <div class="form-group">
                                     <label for="filter">Profile Type</label>
                                     <select class="form-control">
-                                        <option value="0" selected>Owner</option>
-                                        <option value="1">Sitter</option>
+                                        <option value="0" selected>---</option>
+                                        <option value="1">Owner</option>
+                                        <option value="2">Sitter</option>
                                     </select>
                                   </div>
                                   <div class="form-group">
                                     <label for="filter">Pet Type</label>
                                     <select class="form-control">
-                                        <option value="0" selected>Dog</option>
+                                        <option value="0" selected>---</option>
                                         <option value="1">Cat</option>
+                                        <option value="2">Dog</option>
+                                        <option value="3">Bird</option>
+                                        <option value="4">Fish</option>
+                                        <option value="5">Rodent</option>
+                                        <option value="6">Reptile</option>
                                     </select>
                                   </div>
+                                  <!-- this if we wanna do a search within the search-->
                                   <div class="form-group">
-                                    <label for="contain">Author</label>
+                                    <label for="contain">User Email</label>
                                     <input class="form-control" type="text" />
                                   </div>
-                                  <div class="form-group">
-                                    <label for="contain">Contains the words</label>
-                                    <input class="form-control" type="text" />
-                                  </div>
+                              		
                                   <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
                                 </form>
                             </div>

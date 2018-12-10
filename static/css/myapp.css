@@ -34,6 +34,16 @@ div.main_content {
     padding-right: 25vw;
 }
 
+#pawPage{
+    top: 20%;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 18px;
+    padding-left: 25vw;
+    padding-right: 25vw;
+}
+
 .buttonPaw {
     background-color: #555555;
     border: none;
