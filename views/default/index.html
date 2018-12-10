@@ -6,6 +6,7 @@
     var add_sitter_URL = "{{=URL('api', 'add_sitter', user_signature=True)}}";
     var add_owner_URL = "{{=URL('api', 'add_owner', user_signature=True)}}";
     var get_profiles_URL = "{{=URL('api', 'add_owner', user_signature=True)}}";
+    var logged_in_userID = "{{=None if auth.user is None else auth.user.id}}";
 </script>
 {{end}}
 
@@ -16,7 +17,7 @@
     </div>
     <div id="content" class="container">
         <span class="half">
-            <p>Que Paso</p>
+            <p>Que paso ahora</p>
         </span>
         <span class="half">
             <a class="btn padded" style="width:200px" href="{{=URL('default', 'user/login')}}">Log In</a>
@@ -62,7 +63,7 @@
       </div>
       <div class="container form_row padded">
          <div class="form threequarters">
-            <button id="make-profile" v-on:click="make_profile();">Submit</button>
+            <button id="make-profile" v-on:click="make_profile()">Submit</button>
          </div>
       </div>
    </div>

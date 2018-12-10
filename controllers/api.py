@@ -3,7 +3,7 @@ import datetime
 # Here go your api methods.
 @auth.requires_signature()
 def make_profile():
-	profile_entry = db.profile.update_or_insert(
+	profile_id = db.profile.update_or_insert(
 		db.profile.userID==auth.user.id,
 		userID = auth.user.id,
 		first_name = request.vars.first_name,
@@ -12,7 +12,8 @@ def make_profile():
 		image = request.vars.image,
 		city = request.vars.city,
 	)
-	return response.json(dict(profile_entry=profile_entry))
+	logger.info(profile_id)
+	return response.json(dict(profile_id=profile_id))
 
 # @auth.requires_signature()
 # def edit_profile():
@@ -78,8 +79,8 @@ def make_profile():
 @auth.requires_signature()
 def add_sitter():
 	sitter_id = db.sitter.update_or_insert(
-		db.sitter.profileID==db.profile.id,
-		profileID = request.vars.profileID,
+		db.sitter.userID==auth.user.id,
+		userID= auth.user.id,
 	    live = request.vars.live,
 	    description = request.vars.description,
 	)
@@ -89,8 +90,8 @@ def add_sitter():
 @auth.requires_signature()
 def add_owner():
 	owner_id = db.pet_owner.update_or_insert(
-		db.pet_owner.profileID==db.profile.id,
-		profileID= request.vars.profileID,
+		db.pet_owner.userID==auth.user.id,
+		userID=auth.user.id,
 	    live = request.vars.live,
 	    description = request.vars.description,
 	)

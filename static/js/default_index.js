@@ -17,7 +17,6 @@ var app = function() {
     var enumerate = function(v) { var k=0; return v.map(function(e) {e._idx = k++;});};
 
     self.make_profile = function() {
-        console.log("yo");
         $.web2py.disableElement($("#make-profile"));
         let sent_fname = self.vue.fname;
         let sent_lname = self.vue.lname;
@@ -40,7 +39,7 @@ var app = function() {
                 self.vue.city_name="";
                 self.vue.image=null;
                 let new_profile = {
-                    id: data.profile_entry,
+                    id: data.profile_id,
                     first_name: sent_fname,
                     last_name: sent_lname,
                     contact_info: sent_info,
@@ -81,75 +80,76 @@ var app = function() {
     self.process_profiles = function() {
         enumerate(self.vue.profile_list);
         self.vue.profile_list.map(function(e) {
-            Vue.set(e, 'sitter_list', []);
-            Vue.set(e, 'sitter_description', "");
             Vue.set(e, 'isSitter', false);
-            Vue.set(e, 'owner_list', []);
-            Vue.set(e, 'owner_description', "");
             Vue.set(e, 'isOwner', false);
-            Vue.set(e, 'user_id', e.userID);
         });
     };
 
-    self.process_sitter = function(p_idx) {
-        enumrate(self.vue.profile_list[p_idx].sitter_list);
-        self.vue.profile_list[p_idx].sitter_list.map(function(e) {
+    self.process_sitters = function() {
+        enumerate(self.vue.sitter_list);
+        self.vue.sitter_list.map(function(e) {
             Vue.set(e, 'isLive', e.live);
         });
     };
 
-    self.process_owners = function(p_idx) {
-        enumrate(self.vue.profile_list[p_idx].owner_list);
-        self.vue.profile_list[p_idx].owner_list.map(function(e) {
+    self.process_owners = function() {
+        enumerate(self.vue.owner_list);
+        self.vue.owner_list.map(function(e) {
             Vue.set(e, 'pet_list', []);
             Vue.set(e, 'pet_description', "");
             Vue.set(e, 'isLive', e.live);
         });
     };
 
-    self.add_sitter = function(p_idx) {
-        let new_sitter= {
-            profileID: self.vue.profile_list[p_idx].id,
-            description: self.vue.profile_list[p_idx].sitter_description,
-        };
-        $.post(add_sitter_URL, new_sitter, function(response)
-        {
-            new_sitter['id']=response.id;
-            self.vue.profile_list[p_idx].sitter_list.unshift(new_sitter);
-            self.process_sitter(p_idx);wa
-        });
-        self.vue.profile_list[p_idx].sitter_description="";
+    self.add_sitter = function() {
+        let sent_sitter_descript = self.vue.sitter_description;
+        $.post(add_sitter_URL, {
+                description: sent_sitter_descript,
+                live: true,
+            }, function(data) {
+                self.vue.sitter_description="";
+                let new_sitter = {
+                    id: data.sitter_id,
+                    description: sent_sitter_descript,
+                };
+                self.vue.sitter_list.unshift(new_sitter);
+                self.process_sitters();
+            }
+        );
     };
 
-    self.add_owner = function(p_idx) {
-        let new_owner= {
-            profileID: self.vue.profile_list[p_idx].id,
-            description: self.vue.profile_list[p_idx].owner_description,
-        };
-        $.post(add_owner_URL, new_owner, function(response)
-        {
-            new_owner['id']=response.id;
-            self.vue.profile_list[p_idx].owner_list.unshift(new_owner);
-            self.process_sitter(p_idx);
-        });
-        self.vue.profile_list[p_idx].owner_description="";
+    self.add_owner = function() {
+        let sent_owner_descript = self.vue.owner_description
+        $.post(add_owner_URL, {
+                description: sent_sitter_descript,
+                live: true,
+            }, function(data) {
+                self.vue.owner_description="";
+                let new_owner = {
+                    id: data.owner_id,
+                    description: sent_owner_descript,
+                };
+                self.vue.owner_list.unshift(new_owner);
+                self.process_owners();
+            }
+        );
     };
 
-    self.add_pet = function(p_idx, o_idx) {
-        let o = self.vue.profile_list[p_idx].owner_list[o_idx];
-        let new_pet = {
-            ownerID: o.id,
-            pet_name: o.pet_name,
-            species: o.species,
-            description: o.pet_description,
-        };
-        $.post(add_pet_URL, new_pet, function(response) {
-            new_pet['id']=response.id;
-            o.unshift(new_pet);
-            self.process_owners(p_idx);
-        });
-        o.pet_description="";
-    };
+    // self.add_pet = function(p_idx, o_idx) {
+    //     let o = self.vue.profile_list[p_idx].owner_list[o_idx];
+    //     let new_pet = {
+    //         ownerID: o.id,
+    //         pet_name: o.pet_name,
+    //         species: o.species,
+    //         description: o.pet_description,
+    //     };
+    //     $.post(add_pet_URL, new_pet, function(response) {
+    //         new_pet['id']=response.id;
+    //         o.unshift(new_pet);
+    //         self.process_owners(p_idx);
+    //     });
+    //     o.pet_description="";
+    // };
 
     self.edit_profile = function(p_idx) {
         let p = self.vue.profile_list[p_idx];
@@ -179,6 +179,10 @@ var app = function() {
             lname: "",
             city_name: "",
             profile_list: [],
+            sitter_list: [],
+            sitter_description: "",
+            owner_list: [],
+            owner_description: "",
             makingProfile: false,
             image: null,
         },
@@ -196,6 +200,8 @@ var app = function() {
             process_owners: self.process_owners,
             edit_profile: self.edit_profile,
             fun: self.fun,
+            extend: self.extend,
+            enumerate: self.enumerate
         }
     });
     // self.get_profiles();
