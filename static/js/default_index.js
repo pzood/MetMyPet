@@ -1,4 +1,5 @@
 // This is the js for the default/index.html view.
+//$.post(get_profiles_list_url);
 
 var app = function() {
 
