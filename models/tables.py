@@ -25,34 +25,34 @@ db.define_table('profile',
                 )
 
 db.define_table('sitter',
-                Field('profileID', 'references profile'),
+                Field('userID', 'references auth_user'),
                 Field('live', 'boolean'),
                 Field('description', 'text'),
                 )
 
 db.define_table('pet_owner',
-                Field('profileID', 'references profile'),
+                Field('userID', 'references auth_user'),
                 Field('live', 'boolean'),
                 Field('description', 'text'),
                 )
 
 db.define_table('pet',
-                Field('profileID', 'references profile'),
+                Field('userID', 'references profile'),
                 Field('name', 'text'),
                 Field('species', 'text'),
                 Field('description', 'text'),
                 )
 
 db.define_table('sitter_review',
-                Field('reviewerID', 'references profile'),
-                Field('revieweeID', 'references profile'),
+                Field('reviewerID', 'references auth_user'),
+                Field('revieweeID', 'references auth_user'),
                 Field('rating', 'float'),
                 Field('feedback', 'text'),
                 )
 
 db.define_table('owner_review',
-                Field('reviewerID', 'references profile'),
-                Field('revieweeID', 'references profile'),
+                Field('reviewerID', 'references auth_user'),
+                Field('revieweeID', 'references auth_user'),
                 Field('rating', 'float'),
                 Field('feedback', 'text'),
                 )

@@ -25,7 +25,7 @@ def get_profiles_list():
 def get_sitters_list(cities):
     # Join auth_user, profile, and sitter
     set = db(db.auth_user.id == db.profile.userID)
-    set = set(db.profile.id == db.sitter.profileID)
+    set = set(db.auth_user.id == db.sitter.userID)
     set = set(db.sitter.live == True)
     rows = []
 
@@ -37,7 +37,7 @@ def get_sitters_list(cities):
 
         # Build new table with extra info
         for row in temp :
-            id = row['profile']['id']
+            id = row['auth_user']['id']
             avgScore = db.sitter_review.rating.avg()
             row['score'] = db(db.sitter_review.revieweeID == id).select(avgScore).first()[avgScore]
             rows.append(row)
@@ -48,7 +48,7 @@ def get_sitters_list(cities):
 def get_owners_list(cities):
     # Join auth_user, profile, and pet_owner
     set = db(db.auth_user.id == db.profile.userID)
-    set = set(db.profile.id == db.pet_owner.profileID)
+    set = set(db.auth_user.id == db.pet_owner.userID)
     set = set(db.pet_owner.live == True)
     rows = []
 
@@ -60,10 +60,10 @@ def get_owners_list(cities):
 
         # Build new table with extra info
         for row in temp :
-            id = row['profile']['id']
+            id = row['auth_user']['id']
             avgScore = db.owner_review.rating.avg()
             row['score'] = db(db.owner_review.revieweeID == id).select(avgScore).first()[avgScore]
-            pets = db(db.pet.profileID == id).select()
+            pets = db(db.pet.auth_user == id).select()
             row['pets'] = []
             for pet in pets:
                 row['pets'].append(pet)
