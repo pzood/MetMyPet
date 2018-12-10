@@ -26,6 +26,7 @@ def get_sitters_list(cities):
     # Join auth_user, profile, and sitter
     set = db(db.auth_user.id == db.profile.userID)
     set = set(db.profile.id == db.sitter.profileID)
+    set = set(db.sitter.live == True)
     rows = []
 
     # Get people in order of city
@@ -48,6 +49,7 @@ def get_owners_list(cities):
     # Join auth_user, profile, and pet_owner
     set = db(db.auth_user.id == db.profile.userID)
     set = set(db.profile.id == db.pet_owner.profileID)
+    set = set(db.pet_owner.live == True)
     rows = []
 
     # Get people in order of city
