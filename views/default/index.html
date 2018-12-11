@@ -5,9 +5,10 @@
    var make_profile_URL = "{{=URL('api', 'make_profile', user_signature=True)}}";
    var add_sitter_URL = "{{=URL('api', 'add_sitter', user_signature=True)}}";
    var add_owner_URL = "{{=URL('api', 'add_owner', user_signature=True)}}";
-   var get_profiles_URL = "{{=URL('api', 'add_owner', user_signature=True)}}";
+   //var get_profiles_URL = "{{=URL('api', 'add_owner', user_signature=True)}}";
+   var add_pet_URL = "{{=URL('api', 'add_pet', user_signature=True)}}"
    var logged_in_userID = "{{=None if auth.user is None else auth.user.id}}";
-   </script>
+</script>
 {{end}}
 
 {{if auth.user is None:}}
@@ -63,7 +64,7 @@
       </div>
       <div class="container form_row padded">
          <div class="form threequarters">
-            <button id="make-profile" v-on:click="make_profile()">Submit</button>
+            <button id="make-profile" v-on:click="make_profile();">Submit</button>
          </div>
       </div>
    </div>
@@ -121,22 +122,57 @@
             </div>
          </div>
       </div>
-      <!-- The above code is for the radio buttons -->
+      <!-- The ABOVE code is for the radio buttons -->
    </div>
+   <!-- The below is the testing form for add_pet() -->
+   <div class="align left">
+      <div>
+         <!-- <img v-if="post.post_image"  v-bind:src="post.post_image" width="30%" height="45%"/><br> -->
+         ${logged_in_userID}
+         <p>Pet Name:</p>
+         <textarea v-model="pet_name"></textarea>
+         Pet Species:
+         <!-- The code within the div form group allows the user to select from a predefined drop down menu the animal they are searching for.  -->
+         <div class="form-group">
+            <label for="filter">Pet Type</label>
+            <select v-model="pet_species" class="form-control">
+               <option value="" selected>-----</option>
+               <option value="Cat">Cat</option>
+               <option value="Dog">Dog</option>
+               <option value="Bird">Bird</option>
+               <option value="Fish">Fish</option>
+               <option value="Rodent">Rodent</option>
+               <option value="Reptile">Reptile</option>
+            </select>
+         </div>
+         Pet Description:
+         <textarea v-model="pet_description"></textarea>
+      </div>
+      <!-- The below code makes sure that the pet species is selected before you click submit pet -->
+      <div v-if="pet_species != 0">
+         <button v-on:click="add_pet(); reset_species();">Submit Pet</button>
+      </div>
+      <div v-if="pet_species == ''">
+         <button class="fadedButton" v-on:click="add_pet_alert();">Submit Pet</button>
+      </div>
+      <!-- If pet_species is not selected, we send an alert(). We also make the Submit pet button faded  -->
+   </div>
+   <!-- The above is the testing form for add_pet() -->
 </div>
+
 <!-- <div id="main">
-  <div v-if="state === 'home'">
-    ${state}
-  </div>
-  <div v-if="state === 'profile'">
-    ${state}
-  </div>
-  <div v-if="state === 'editProfile'">
-    edit profile
-  </div>
-  <div v-if="state === 'listings'">
-    listings
-  </div>
+   <div v-if="state === 'home'">
+      ${state}
+   </div>
+   <div v-if="state === 'profile'">
+      ${state}
+   </div>
+   <div v-if="state === 'editProfile'">
+      edit profile
+   </div>
+   <div v-if="state === 'listings'">
+      listings
+   </div>
 </div> -->
 {{pass}}
 

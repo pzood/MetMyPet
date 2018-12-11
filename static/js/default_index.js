@@ -16,7 +16,7 @@ var app = function () {
     // Enumerates an array.
     var enumerate = function (v) { var k = 0; return v.map(function (e) { e._idx = k++; }); };
 
-    self.make_profile = function() {
+    self.make_profile = function () {
         $.web2py.disableElement($("#make-profile"));
         let sent_fname = self.vue.fname;
         let sent_lname = self.vue.lname;
@@ -67,105 +67,31 @@ var app = function () {
         }
     };
 
-    // self.get_profiles = function () {
-    //     $.getJSON(get_profiles_URL, function (data) {
-    //         self.vue.profile_list = data.profile_list;
-    //         self.process_profiles();
-    //         console.log("got list");
-    //     });
-    //     console.log("fired get");
-    // };
+    self.process_owners = function () {
+        enumrate(self.vue.owner_list);
+        self.vue.owner_list.map(function (e) {
+            Vue.set(e, 'pet_list', []);
+            Vue.set(e, 'pet_description', "");
+            Vue.set(e, 'isLive', e.live);
+        });
+    };
 
-    // self.process_profiles = function () {
-    //     enumerate(self.vue.profile_list);
-    //     self.vue.profile_list.map(function (e) {
-    //         Vue.set(e, 'isSitter', false);
-    //         Vue.set(e, 'isOwner', false);
-    //     });
-    // };
-
-    // self.process_sitters = function () {
-    //     enumrate(self.vue.sitter_list);
-    //     self.vue.sitter_list.map(function (e) {
-    //         Vue.set(e, 'isLive', e.live);
-    //     });
-    // };
-
-    // self.process_owners = function () {
-    //     enumrate(self.vue.owner_list);
-    //     self.vue.owner_list.map(function (e) {
-    //         Vue.set(e, 'pet_list', []);
-    //         Vue.set(e, 'pet_description', "");
-    //         Vue.set(e, 'isLive', e.live);
-    //     });
-    // };
-
-    self.add_sitter = function() {
+    self.add_sitter = function () {
         console.log("add_sitter called");
         let sent_sitter_descript = self.vue.sitter_description;
         $.post(add_sitter_URL, {
+            description: sent_sitter_descript,
+            live: true,
+        }, function (data) {
+            self.vue.sitter_description = "";
+            let new_sitter = {
+                id: data.sitter_id,
                 description: sent_sitter_descript,
-                live: true,
-            }, function(data) {
-                self.vue.sitter_description="";
-                let new_sitter = {
-                    id: data.sitter_id,
-                    description: sent_sitter_descript,
-                };
-                self.vue.sitter_list.unshift(new_sitter);
-                //self.process_sitters();
-            }
+            };
+            self.vue.sitter_list.unshift(new_sitter);
+            //self.process_sitters();
+        }
         );
-    };
-
-    self.add_owner = function() {
-        console.log("add_owner called");
-        let sent_owner_descript = self.vue.owner_description
-        $.post(add_owner_URL, {
-                description: sent_owner_descript,
-                live: true,
-            }, function(data) {
-                self.vue.owner_description="";
-                let new_owner = {
-                    id: data.owner_id,
-                    description: sent_owner_descript,
-                };
-                self.vue.owner_list.unshift(new_owner);
-                //self.process_owners();
-            }
-        );
-    };
-
-    // self.add_pet = function(p_idx, o_idx) {
-    //     let o = self.vue.profile_list[p_idx].owner_list[o_idx];
-    //     let new_pet = {
-    //         ownerID: o.id,
-    //         pet_name: o.pet_name,
-    //         species: o.species,
-    //         description: o.pet_description,
-    //     };
-    //     $.post(add_pet_URL, new_pet, function(response) {
-    //         new_pet['id']=response.id;
-    //         o.unshift(new_pet);
-    //         self.process_owners(p_idx);
-    //     });
-    //     o.pet_description="";
-    // };
-
-    self.edit_profile = function (p_idx) {
-        let p = self.vue.profile_list[p_idx];
-        $.post(edit_profile_URL, {
-            id: p.id,
-            first_name: p.first_name,
-            last_name: p.last_name,
-            contact_info: p.contact_info,
-            city: p.city,
-        });
-        console.log("updated");
-    };
-
-    self.fun = function () {
-        alert("hello");
     };
 
     self.change_state = function (state_name) {
@@ -200,6 +126,114 @@ var app = function () {
         }
     };
 
+    self.fun = function () {
+        alert("Test");
+    };
+
+    self.add_owner = function () {
+        let sent_owner_descript = self.vue.owner_description
+        $.post(add_owner_URL, {
+            description: sent_owner_descript,
+            live: true,
+        }, function (data) {
+            self.vue.owner_description = "";
+            let new_owner = {
+                id: data.owner_id,
+                description: sent_owner_descript,
+            };
+            self.vue.owner_list.unshift(new_owner);
+            //self.process_owners();
+        }
+        );
+    };
+
+    self.add_pet = function() {
+        let sent_name = self.vue.pet_name;
+        let sent_species = self.vue.pet_species;
+        let sent_description = self.vue.pet_description;
+        $.post(add_pet_URL, {
+            pet_name: sent_name,
+            species: sent_species,
+            description: sent_description,
+        }, function (data){
+            self.vue.pet_name = "";
+            self.vue.pet_species = "";
+            self.vue.pet_description = "";
+            let new_pet = {
+                id: data.pet_id,
+                pet_name: sent_name,
+                species: sent_species,
+                description: sent_description,
+            };
+            console.log(new_pet);
+            self.vue.pet_list.unshift(new_pet);
+        });
+    };
+
+    self.add_pet_alert= function(){
+        alert("Please Select A Pet!");
+    };
+
+    self.reset_species = function(){
+        self.vue.pet_species = "";
+    }
+
+    /* 
+    //=====Below is the code for Various functions that we may or may not need=====
+        
+    self.add_pet = function(o_idx){
+        let o = self.vue.profile_list.owner_list[o_idx];
+        let new_pet = {
+            ownerID: o.id,
+            pet_name: o.pet_name,
+            species: o.species,
+            description: o.pet_description,
+        };
+        $.post(add_pet_URL, new_pet, function(response){
+            new_pet['id'] = response.id;
+            o.unshift(new_pet);
+            //self.process_owners();
+        });
+        o.pet_description = "";
+    };
+
+    self.get_profiles = function () {
+        $.getJSON(get_profiles_URL, function (data) {
+            self.vue.profile_list = data.profile_list;
+            self.process_profiles();
+            console.log("got list");
+        });
+        console.log("fired get");
+    };
+
+    self.process_profiles = function () {
+        enumerate(self.vue.profile_list);
+        self.vue.profile_list.map(function (e) {
+            Vue.set(e, 'isSitter', false);
+            Vue.set(e, 'isOwner', false);
+        });
+    };
+
+    self.process_sitters = function () {
+        enumrate(self.vue.sitter_list);
+        self.vue.sitter_list.map(function (e) {
+            Vue.set(e, 'isLive', e.live);
+        });
+    };
+
+    self.edit_profile = function (p_idx) {
+        let p = self.vue.profile_list[p_idx];
+        $.post(edit_profile_URL, {
+            id: p.id,
+            first_name: p.first_name,
+            last_name: p.last_name,
+            contact_info: p.contact_info,
+            city: p.city,
+        });
+        console.log("updated");
+    };
+    */
+
 
     // Complete as needed.
     self.vue = new Vue({
@@ -217,6 +251,10 @@ var app = function () {
             sitter_description: "",
             owner_list: [],
             owner_description: "",
+            pet_list: [],
+            pet_name: "",
+            pet_species: "",
+            pet_description: "",
             makingProfile: false,
             image: null,
             show_sitter_form: false,
@@ -243,6 +281,8 @@ var app = function () {
             checkBlur: self.checkBlur,
             extend: self.extend,
             enumerate: self.enumerate,
+            add_pet_alert: self.add_pet_alert,
+            reset_species: self.reset_species,
         }
     });
     // self.get_profiles();

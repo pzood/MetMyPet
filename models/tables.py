@@ -19,10 +19,10 @@ def get_current_time():
 
 db.define_table('profile',
                 Field('userID', 'references auth_user'),
-                Field('first_name', 'text'),
-                Field('last_name', 'text'),
+                Field('first_name', 'text', requires=IS_NOT_EMPTY()),
+                Field('last_name', 'text', requires=IS_NOT_EMPTY()),
                 Field('contact_info', 'text', default=get_user_email()),
-                Field('city', 'text'),
+                Field('city', 'text', requires=IS_NOT_EMPTY()),
                 Field('image', 'upload'),
                 Field('last_update', 'datetime', update=get_current_time()),
                 )
@@ -31,21 +31,25 @@ db.define_table('sitter',
                 # Field('profileID', 'references profile'),
                 Field('userID', 'references auth_user'),
                 Field('live', 'boolean', default=True),
-                Field('description', 'text'),
+                Field('description', 'text', requires=IS_NOT_EMPTY()),
                 )
 
 db.define_table('pet_owner',
                 # Field('profileID', 'references profile'),
                 Field('userID', 'references auth_user'),
                 Field('live', 'boolean', default=True),
-                Field('description', 'text'),
+                Field('description', 'text', requires=IS_NOT_EMPTY()),
                 )
 
+pet_categories = ['Cat', 'Dog', 'Bird', 'Fish', 'Rodent', 'Reptile']
+
 db.define_table('pet',
-                Field('ownerID', 'references pet_owner'),
-                Field('pet_name', 'text'),
-                Field('species', 'text'),
-                Field('description', 'text'),
+                # Field('ownerID', 'references auth_user'),
+                Field('userID', 'references auth_user'),
+                Field('pet_name', 'text', requires=IS_NOT_EMPTY()),
+                Field('species', default='category', requires=IS_IN_SET(pet_categories)),
+                # Field('species', 'text', requires=IS_NOT_EMPTY()),
+                Field('description', 'text', requires=IS_NOT_EMPTY()),
                 )
 
 db.define_table('sitter_review',
