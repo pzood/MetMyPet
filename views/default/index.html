@@ -32,9 +32,9 @@
         <h2>Probably Going to be Our Logo</h2>
         
         <button class="buttonPaw" v-on:click="change_state('profile')">Profile</button>		
-		<button class="buttonPaw" v-on:click="load_listings('listings','0')">Owners</button>
-		<button class="buttonPaw" v-on:click="load_listings('listings','0')">Sitters</button>
 		<button class="buttonPaw" v-on:click="load_listings('listings','0')">Search</button>
+		<button class="buttonPaw" v-on:click="load_listings('listings','1')">Sitters</button>
+		<button class="buttonPaw" v-on:click="load_listings('listings','2')">Owners</button>
 		<button class="buttonPaw buttonPalm" v-on:click="change_state('contacts')">Contacts</button>
 		
 		<a class="btn padded" style="width:200px" href="{{=URL('default', 'user/logout')}}">Log Out</a>
