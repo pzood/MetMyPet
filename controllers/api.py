@@ -63,7 +63,7 @@ def get_owners_list(cities):
             id = row['auth_user']['id']
             avgScore = db.owner_review.rating.avg()
             row['score'] = db(db.owner_review.revieweeID == id).select(avgScore).first()[avgScore]
-            pets = db(db.pet.auth_user == id).select()
+            pets = db(db.pet.userID == id).select()
             row['pets'] = []
             for pet in pets:
                 row['pets'].append(pet)
