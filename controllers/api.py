@@ -9,7 +9,7 @@ log.setLevel(logging.DEBUG)
 
 # Get the list of profiles I need
 def get_profiles_list():
-    url = "http://getnearbycities.geobytes.com/GetNearbyCities?&radius=100&locationcode=Scotts Valley,%20CA&limit=20"
+    url = "http://getnearbycities.geobytes.com/GetNearbyCities?&radius=100&locationcode=Santa Cruz,%20CA&limit=20"
     response = urllib.urlopen(url)
     data = json.loads(response.read())
 
@@ -18,8 +18,7 @@ def get_profiles_list():
         cities.append(city[1])
 
     result = get_owners_list(cities)
-    log.debug(result)
-    return "ok"
+    return result
 
 # Get the sitters I need by city distance order
 def get_sitters_list(cities):
