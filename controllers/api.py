@@ -9,16 +9,16 @@ log.setLevel(logging.DEBUG)
 
 # Get the list of profiles I need
 def get_profiles_list():
-    url = "http://getnearbycities.geobytes.com/GetNearbyCities?&radius=100&locationcode=Santa Cruz,%20CA&limit=20"
-    response = urllib.urlopen(url)
-    data = json.loads(response.read())
+    url = "http://getnearbycities.geobytes.com/GetNearbyCities?&radius=100&locationcode=Santa Cruz,%20CA&limit=5"
+    get = urllib.urlopen(url)
+    data = json.loads(get.read())
 
     cities = []
     for city in data:
         cities.append(city[1])
 
     result = get_owners_list(cities)
-    return result
+    return response.json(dict(result=result, cities = cities))
 
 # Get the sitters I need by city distance order
 def get_sitters_list(cities):
@@ -41,7 +41,7 @@ def get_sitters_list(cities):
             row['score'] = db(db.sitter_review.revieweeID == id).select(avgScore).first()[avgScore]
             rows.append(row)
 
-    return response.json(dict(rows=rows))
+    return rows
 
 # Get the owners I need by city distance order
 def get_owners_list(cities):
@@ -68,4 +68,4 @@ def get_owners_list(cities):
                 row['pets'].append(pet)
             rows.append(row)
 
-    return response.json(dict(rows=rows))
+    return rows

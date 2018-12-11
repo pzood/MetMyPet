@@ -1,13 +1,9 @@
 // This is the js for the default/index.html view.
 //$.post(get_profiles_list_url);
 
-$.post(get_profiles_list_url);
-// $.getJSON(
-// 	"http://getnearbycities.geobytes.com/GetNearbyCities?callback=?&radius=100&locationcode=Santa%20Cruz,%20CA&limit=20",
-// 		 function (data) {
-//
-// 		 }
-// 	 );
+$.post(get_profiles_list_url, {}, function (data) {
+    console.log(data);
+});
 
 var app = function() {
 
