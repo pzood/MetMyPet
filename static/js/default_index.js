@@ -2,7 +2,8 @@
 //$.post(get_profiles_list_url);
 
 $.post(get_profiles_list_url, {}, function (data) {
-    console.log(data);
+    //self.vue.profile_list = data.profile_list;
+    //console.log(data);
 });
 
 var app = function() {
@@ -18,14 +19,36 @@ var app = function() {
         }
     };
 
+    // Enumerates an array
+    var enumerate = function(v) { var k=0; return v.map(function(e) {e._idx = k++;});};
+
+    // Allows us to keep one page app
     self.change_state = function(state_name) {
         self.vue.state = state_name;
         
     };
 
+    // Controls what profiles will load
     self.load_listings = function(state_name, data_to_load){
         self.vue.state = state_name;
+
+        $.getJSON(get_profiles_list_url, 
+            {
+                //Pretty sure this is where filters will be
+            }, 
+
+            function (data) 
+            {
+                
+                //self.vue.profile_list = data.profile_list;
+                self.vue.cities = data.cities;
+                self.vue.profile_data = data.result;
+                console.log(data);
+
+            });
     };
+
+    
 
     // Complete as needed.
     self.vue = new Vue({
@@ -33,7 +56,10 @@ var app = function() {
         delimiters: ['${', '}'],
         unsafeDelimiters: ['!{', '}'],
         data: {
-            state: 'home'
+            state: 'home',
+            profile_data: [],
+            cities: []
+
         },
         methods: {
             change_state: self.change_state,

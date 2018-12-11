@@ -1,10 +1,11 @@
 {{extend 'layout.html'}}
 {{block head}}
-{{end}}
-
+<script src="{{=URL('static', 'js/vue.js')}}"></script>
 <script>
     var get_profiles_list_url = "{{=URL('api', 'get_profiles_list')}}";
 </script>
+{{end}}
+
 
 {{if auth.user is None:}}
 <div id="splash_background" style="width:100vw;height:100vh">
@@ -32,7 +33,7 @@
         <h2>Probably Going to be Our Logo</h2>
         
         <button class="buttonPaw" v-on:click="change_state('profile')">Profile</button>		
-		<button class="buttonPaw" v-on:click="load_listings('listings','0')">Search</button>
+		<!--<button class="buttonPaw" v-on:click="load_listings('listings','0')">Search</button>-->
 		<button class="buttonPaw" v-on:click="load_listings('listings','1')">Sitters</button>
 		<button class="buttonPaw" v-on:click="load_listings('listings','2')">Owners</button>
 		<button class="buttonPaw buttonPalm" v-on:click="change_state('contacts')">Contacts</button>
@@ -58,6 +59,9 @@
 		<div>
 			<div class="container">
 			  <h2>This is going to be our search page</h2>
+
+			  <!-- Code for the search bar and the dropdowns to filter our results-->
+
 			  <div class="row">
 				<div class="col-md-12">
 		            <div class="input-group" id="adv-search">
@@ -80,8 +84,8 @@
 		                                    <label for="filter">Pet Type</label>
 		                                    <select class="form-control">
 		                                        <option value="0" selected>---</option>
-		                                        <option value="1">Cat</option>
-		                                        <option value="2">Dog</option>
+		                                        <option value="Cat">Cat</option>
+		                                        <option value="Dog">Dog</option>
 		                                        <option value="3">Bird</option>
 		                                        <option value="4">Fish</option>
 		                                        <option value="5">Rodent</option>
@@ -106,26 +110,24 @@
 		        </div>
 			</div>
 
+			<!-- Code for loading and displaying all the profiles -->
+			<div class="profile_div" v-for="row in profile_data">
 			  <div class="panel-group">
 			    <div class="panel panel-default">
-			      <div class="panel-heading">Picture Placeholder Name:</div>
+			      <div class="panel-heading">Name: ${row.auth_user.first_name} ${row.auth_user.last_name}</div>
 			      <div class="panel-body">
-			      	Location: 
+			      	Location: ${row.profile.city}
 			      </div>
 			      <div class="panel-body">
-			      	Description:
+			      	Description: ${row.pet_owner.description}
 			      </div>
-			    </div>
-			    <div class="panel panel-default">
-			      <div class="panel-heading">Panel Header</div>
-			      <div class="panel-body">Panel Content</div>
-			    </div>
-			    <div class="panel panel-default">
-			      <div class="panel-heading">Panel Header</div>
-			      <div class="panel-body">Panel Content</div>
+			      <div class="panel-body">
+			      	Rating: ${row.score}
+			      </div>
 			    </div>
 			  </div>
 			</div>
+		</div>
 
 			<button v-on:click="change_state('home')">Back</button>
 			search
