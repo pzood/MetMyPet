@@ -19,8 +19,8 @@ def get_current_time():
 
 db.define_table('profile',
                 Field('userID', 'references auth_user'),
-                Field('first_name', 'text', requires=IS_NOT_EMPTY()),
-                Field('last_name', 'text', requires=IS_NOT_EMPTY()),
+                Field('first_name', 'text'),
+                Field('last_name', 'text'),
                 Field('contact_info', 'text', default=get_user_email()),
                 Field('city', 'text', requires=IS_NOT_EMPTY()),
                 Field('image', 'text'),

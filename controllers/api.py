@@ -71,6 +71,7 @@ def view_profile():
 	image_url = profilePic.image
 	currSitter=db(db.sitter.userID==user_id).select()
 	currOwner=db(db.pet_owner.userID==user_id).select()
+	logger.info(currOwner)
 	currPets=db(db.pet.userID==user_id).select()
 	return response.json(dict(currProfile=currProfile, image_url=image_url, currSitter=currSitter, currOwner=currOwner, currPets=currPets))
 
