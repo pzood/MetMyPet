@@ -58,10 +58,7 @@ def add_pet():
 #     image_url = profile.image
 #     return response.json(dict(image_url=image_url))
 
-def get_petlist():
-	pet_list = db(db.pet.userID == auth.user.id).select()
-	return response.json(dict(pet_list = pet_list))
-
+@auth.requires_signature()
 def delete_pet():
 	db(db.pet.id == request.vars.id).delete()
 	return "ok"

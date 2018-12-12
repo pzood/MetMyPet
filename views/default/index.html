@@ -8,7 +8,6 @@
    //var get_profiles_URL = "{{=URL('api', 'add_owner', user_signature=True)}}";
    var add_pet_URL = "{{=URL('api', 'add_pet', user_signature=True)}}"
    var get_image_url = "{{=URL('api', 'get_image', user_signature=True)}}";
-   var get_petlist_url = "{{=URL('api', 'get_petlist', user_signature=True)}}";
    var delete_pet_url = "{{=URL('api', 'delete_pet', user_signature=True)}}";
    var view_profile_url = "{{=URL('api', 'view_profile')}}"
    var get_profiles_list_url = "{{=URL('api', 'get_profiles_list')}}";
@@ -17,18 +16,18 @@
 {{end}}
 
 {{if auth.user is None:}}
-<div id="body" style="width:100vw;height:100vh">
-   <div id="title">
-      <div>PETMET</div>
+<div id="splash_background" style="width:100vw;height:100vh">
+   <div id="splash_title">
+     <div>PETMET</div>
    </div>
    <div id="content" class="container">
-      <span class="half">
-         <p>Que Paso</p>
-      </span>
-      <span class="half">
-         <a class="btn padded" style="width:200px" href="{{=URL('default', 'user/login')}}">Log In</a>
-         <a class="btn padded" style="width:200px" href="{{=URL('default', 'user/register')}}">Sign Up</a>
-      </span>
+        <span class="half">
+            <p>This is going to be a little informational field that talks about our website.</p>
+        </span>
+        <span class="half">
+            <a class="btn padded" style="width:200px" href="{{=URL('default', 'user/login')}}">Log In</a>
+            <a class="btn padded" style="width:200px" href="{{=URL('default', 'user/register')}}">Sign Up</a>
+        </span>
    </div>
 </div>
 

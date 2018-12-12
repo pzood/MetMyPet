@@ -199,12 +199,12 @@ var app = function () {
         self.vue.pet_species = "";
     };
 
-    self.get_petlist = function(){
-        $.getJSON(get_petlist_url,function(response){
-            self.vue.pet_list = response.pet_list;
-            self.process_pets();
-        });
-    };
+    // self.get_petlist = function(){
+    //     $.getJSON(get_petlist_url,function(response){
+    //         self.vue.pet_list = response.pet_list;
+    //         self.process_pets();
+    //     });
+    // };
 
     self.process_pets = function(){
         var i=0;
@@ -245,7 +245,6 @@ var app = function () {
             if ((data.currOwner!=undefined)&&(data.currSitter!=undefined)) {
                 self.vue.a_sitter=data.currOwner;
                 self.vue.a_owner=data.currSitter;
-                self.vue.a_pets=data.currPets;
             }
             else if (data.currOwner!=undefined) {
                 self.vue.a_owner=data.currOwner;
@@ -352,12 +351,10 @@ var app = function () {
             pet_name: "",
             pet_species: "",
             pet_description: "",
-            makingProfile: false,
             image: null,
             show_sitter_form: false,
             show_owner_form: false,
             show_both_form: false,
-            received_image: null,
         },
         methods: {
             change_state: self.change_state,
@@ -373,7 +370,6 @@ var app = function () {
             //process_profiles: self.process_profiles,
             process_sitter: self.process_sitter,
             process_owners: self.process_owners,
-            edit_profile: self.edit_profile,
             fun: self.fun,
             toggle_owner_form: self.toggle_owner_form,
             toggle_sitter_form: self.toggle_sitter_form,
@@ -388,8 +384,6 @@ var app = function () {
         }
     });
     // self.get_profiles();
-
-    self.get_petlist();
 
     return self;
 };
