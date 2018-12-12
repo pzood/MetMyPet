@@ -63,5 +63,10 @@ db.define_table('owner_review',
                 Field('rating', 'float'),
                 Field('feedback', 'text'),
                 )
+
+db.define_table('favorite',
+                Field('favoriterID', 'references auth_user'),
+                Field('favoriteeID', 'references auth_user'),
+                )
 # after defining tables, uncomment below to enable auditing
 # auth.enable_record_versioning(db)
