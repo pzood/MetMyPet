@@ -29,7 +29,7 @@
     </main>
   </body>
   <script src="{{=URL('static','js/marked.min.js')}}"></script>
-  <script src="{{=URL('static','js/vue.min.js')}}"></script>
+  <script src="{{=URL('static','js/vue.js')}}"></script>
   {{block bottomjs}}{{end}}
   <script>
     jQuery('.social a').each(function(){var t=jQuery(this); t.attr('href',t.attr('href').replace('{url}',encodeURIComponent(window.location.href)));});

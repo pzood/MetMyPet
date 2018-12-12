@@ -25,7 +25,13 @@ var app = function() {
     };
 
     self.initSearch = function(type) {
+        // Reset fields to default
+        self.vue.searchLocation = '';
         self.vue.searchRole = type;
+        self.vue.searchEmail = '';
+        self.vue.searchPet = '';
+
+        // Do default search
         self.executeSearch();
     };
 
@@ -55,8 +61,8 @@ var app = function() {
             profile_data: [],
             cities: [],
             searchLocation: '',
-            searchRole: 0,
-            searchPet: 0,
+            searchRole: '',
+            searchPet: '',
             searchEmail: '',
 
         },
