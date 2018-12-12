@@ -269,62 +269,6 @@ var app = function () {
         console.log(self.vue.a_profile);
     };
 
-    /* 
-    //=====Below is the code for Various functions that we may or may not need=====
-        
-    self.add_pet = function(o_idx){
-        let o = self.vue.profile_list.owner_list[o_idx];
-        let new_pet = {
-            ownerID: o.id,
-            pet_name: o.pet_name,
-            species: o.species,
-            description: o.pet_description,
-        };
-        $.post(add_pet_URL, new_pet, function(response){
-            new_pet['id'] = response.id;
-            o.unshift(new_pet);
-            //self.process_owners();
-        });
-        o.pet_description = "";
-    };
-
-    self.get_profiles = function () {
-        $.getJSON(get_profiles_URL, function (data) {
-            self.vue.profile_list = data.profile_list;
-            self.process_profiles();
-            console.log("got list");
-        });
-        console.log("fired get");
-    };
-
-    self.process_profiles = function () {
-        enumerate(self.vue.profile_list);
-        self.vue.profile_list.map(function (e) {
-            Vue.set(e, 'isSitter', false);
-            Vue.set(e, 'isOwner', false);
-        });
-    };
-
-    self.process_sitters = function () {
-        enumrate(self.vue.sitter_list);
-        self.vue.sitter_list.map(function (e) {
-            Vue.set(e, 'isLive', e.live);
-        });
-    };
-
-    self.edit_profile = function (p_idx) {
-        let p = self.vue.profile_list[p_idx];
-        $.post(edit_profile_URL, {
-            id: p.id,
-            first_name: p.first_name,
-            last_name: p.last_name,
-            contact_info: p.contact_info,
-            city: p.city,
-        });
-        console.log("updated");
-    };
-    */
-
 
     // Complete as needed.
     self.vue = new Vue({

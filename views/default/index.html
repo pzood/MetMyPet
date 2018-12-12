@@ -20,7 +20,7 @@
    <div id="splash_title">
      <div>PETMET</div>
    </div>
-   <div id="content" class="container">
+   <div id="content" class="jumbotron">
         <span class="half">
             <p>This is going to be a little informational field that talks about our website.</p>
         </span>
@@ -37,7 +37,7 @@
     <!--  ............ Begin Home Page .............-->
     
      <div v-if="state === 'home'">
-      <div id="content" class="container">
+      <div id="content" class="jumbotron">
         <h2>Probably Going to be Our Logo</h2>
         <button class="buttonPaw" v-on:click="change_state('profile'); view_profile(logged_in_userID) ">Profile</button>
         <button class="buttonPaw" v-on:click="load_listings('listings', '0')">Owners</button>

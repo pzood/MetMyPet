@@ -10,10 +10,10 @@ div.main_content {
 #splash_title {
   width: 100%;
   height: 100%;
-  line-height: 25vh;
+  line-height: 20vh;
   text-align: center;
   vertical-align: middle;
-  font-size: 16vw;
+  font-size: 14vw;
   color:white;
   
   --x: 1px;
@@ -23,7 +23,7 @@ div.main_content {
   
 #content {
   position: absolute;
-  left: 10%;
+  left: 0;
   top: 25%;
   width: 100%;
   text-align: center;
