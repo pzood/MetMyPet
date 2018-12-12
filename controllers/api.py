@@ -1,5 +1,6 @@
 import datetime
 
+
 # Here go your api methods.
 @auth.requires_signature()
 def make_profile():
@@ -106,3 +107,16 @@ def add_pet():
 	    description = request.vars.description,
 	)
 	return response.json(dict(pet_id = pet_id))
+
+def get_image():
+    profile = db(db.profile.userID == auth.user.id).select().first()
+    image_url = profile.image
+    return response.json(dict(image_url=image_url))
+
+def get_petlist():
+	pet_list = db(db.pet.userID == auth.user.id).select()
+	return response.json(dict(pet_list = pet_list))
+
+def delete_pet():
+	db(db.pet.id == request.vars.id).delete()
+	return "ok"

@@ -7,6 +7,10 @@
    var add_owner_URL = "{{=URL('api', 'add_owner', user_signature=True)}}";
    //var get_profiles_URL = "{{=URL('api', 'add_owner', user_signature=True)}}";
    var add_pet_URL = "{{=URL('api', 'add_pet', user_signature=True)}}"
+   var get_image_url = "{{=URL('api', 'get_image', user_signature=True, hash_vars=False)}}";
+   var get_petlist_url = "{{=URL('api', 'get_petlist', user_signature=True, hash_vars=False)}}";
+   var delete_pet_url = "{{=URL('api', 'delete_pet', user_signature=True, hash_vars=False)}}";
+
    var logged_in_userID = "{{=None if auth.user is None else auth.user.id}}";
 </script>
 {{end}}
@@ -129,6 +133,9 @@
       <div>
          <!-- <img v-if="post.post_image"  v-bind:src="post.post_image" width="30%" height="45%"/><br> -->
          ${logged_in_userID}
+         <p>Pet Image:</p>
+         <img v-bind:src="received_image" width="40%" height="40%"/>
+         <button v-on:click="get_image();">View img</button>
          <p>Pet Name:</p>
          <textarea v-model="pet_name"></textarea>
          Pet Species:
@@ -156,6 +163,10 @@
          <button class="fadedButton" v-on:click="add_pet_alert();">Submit Pet</button>
       </div>
       <!-- If pet_species is not selected, we send an alert(). We also make the Submit pet button faded  -->
+   </div>
+   <div v-for="pet in pet_list">
+      ${pet.pet_name}
+      <button v-on:click="delete_pet(pet.idx)">X</button>
    </div>
    <!-- The above is the testing form for add_pet() -->
 </div>

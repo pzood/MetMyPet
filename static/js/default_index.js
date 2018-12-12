@@ -62,6 +62,7 @@ var app = function () {
             let reader = new FileReader();
             reader.addEventListener('load', function () {
                 self.vue.image = reader.result
+                // console.log(self.vue.image);
             }, false);
             reader.readAsDataURL(file);
         }
@@ -147,7 +148,7 @@ var app = function () {
         );
     };
 
-    self.add_pet = function() {
+    self.add_pet = function () {
         let sent_name = self.vue.pet_name;
         let sent_species = self.vue.pet_species;
         let sent_description = self.vue.pet_description;
@@ -155,7 +156,7 @@ var app = function () {
             pet_name: sent_name,
             species: sent_species,
             description: sent_description,
-        }, function (data){
+        }, function (data) {
             self.vue.pet_name = "";
             self.vue.pet_species = "";
             self.vue.pet_description = "";
@@ -167,16 +168,52 @@ var app = function () {
             };
             console.log(new_pet);
             self.vue.pet_list.unshift(new_pet);
+            self.process_pets();
         });
     };
 
-    self.add_pet_alert= function(){
+    self.add_pet_alert = function () {
         alert("Please Select A Pet!");
     };
 
-    self.reset_species = function(){
+    self.reset_species = function () {
         self.vue.pet_species = "";
-    }
+    };
+
+    self.get_petlist = function(){
+        $.getJSON(get_petlist_url,function(response){
+            self.vue.pet_list = response.pet_list;
+            self.process_pets();
+        });
+    };
+
+    self.process_pets = function(){
+        var i=0;
+        self.vue.pet_list.map(function(e){
+            Vue.set(e,'idx', i++);
+        });
+    };
+
+    self.delete_pet = function(idx){
+        $.post(delete_pet_url, {
+            id: self.vue.pet_list[idx].id,
+        }, function(response){
+            self.vue.pet_list.splice(idx,1);
+            self.process_pets();
+        });
+    };
+
+    self.get_image = function (){
+        console.log(logged_in_userID);
+        $.getJSON(get_image_url, // https://host/app/api/get_image_url?post_id=4
+            {
+                profile_id: logged_in_userID,
+            },
+            function (data) {
+                self.vue.received_image = data.image_url;
+            });
+            console.log(self.vue.received_image);
+    };
 
     /* 
     //=====Below is the code for Various functions that we may or may not need=====
@@ -260,6 +297,7 @@ var app = function () {
             show_sitter_form: false,
             show_owner_form: false,
             show_both_form: false,
+            received_image: null,
         },
         methods: {
             make_profile: self.make_profile,
@@ -283,9 +321,13 @@ var app = function () {
             enumerate: self.enumerate,
             add_pet_alert: self.add_pet_alert,
             reset_species: self.reset_species,
+            get_image: self.get_image,
+            delete_pet: self.delete_pet
         }
     });
     // self.get_profiles();
+
+    self.get_petlist();
 
     return self;
 };
