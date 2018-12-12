@@ -1,10 +1,11 @@
 {{extend 'layout.html'}}
 {{block head}}
-{{end}}
-
+<script src="{{=URL('static', 'js/vue.js')}}"></script>
 <script>
     var get_profiles_list_url = "{{=URL('api', 'get_profiles_list')}}";
 </script>
+{{end}}
+
 
 {{if auth.user is None:}}
 <div id="splash_background" style="width:100vw;height:100vh">
@@ -13,14 +14,7 @@
     </div>
     <div id="content" class="container">
         <span class="half">
-            <p>Do you see banana man?
-            Hopping over on de white hot sand
-            Here he come with some for me
-            Freshly taken from banana tree
-            Banana man, me want a ton
-            Gimme double and a bonus one
-            Gimme more for all me friends
-            Dis banana flow will never end</p>
+            <p>This is going to be a little informational field that talks about our website.</p>
         </span>
         <span class="half">
             <a class="btn padded" style="width:200px" href="{{=URL('default', 'user/login')}}">Log In</a>
@@ -33,22 +27,21 @@
 <div id="main">
 <div id="splash_background" style="width:100vw;height:100vh">
 	<div v-if="state === 'home'">
-		<div id="content" class="container">
+		<div id="pawPage" class="container">
     	
     	
         <h2>Probably Going to be Our Logo</h2>
         
-        <button class="buttonPaw" v-on:click="change_state('profile')">Profile</button>
-        
-		
-		<button class="buttonPaw" v-on:click="change_state('owners')">Owners</button>
-		<button class="buttonPaw" v-on:click="change_state('sitters')">Sitters</button>
-		<button class="buttonPaw" v-on:click="change_state('search')">Search</button>
+        <button class="buttonPaw" v-on:click="change_state('profile')">Profile</button>		
+		<button class="buttonPaw" v-on:click="change_state('listings');initSearch('sitter')">Sitters</button>
+		<button class="buttonPaw" v-on:click="change_state('listings');initSearch('owner')">Owners</button>
 		<button class="buttonPaw buttonPalm" v-on:click="change_state('contacts')">Contacts</button>
 		
 		<a class="btn padded" style="width:200px" href="{{=URL('default', 'user/logout')}}">Log Out</a>
     	</div>
 	
+	<!-- Changes the page to the profile page -->
+
 	</div>
 	<div v-if="state === 'profile'">
 		<div id="backButton">
@@ -57,18 +50,101 @@
 		</div>
 		
 	</div>
+
+	<!-- Changes the page to the edit profile page -->
+
 	<div v-if="state === 'editProfile'">
 		<div>
 			<button v-on:click="change_state('home')">Back</button>
 			edit profile
 		</div>
 	</div>
-	<div v-if="state === 'search'">
+
+	<!-- Changes the page to the listings page -->
+
+	<div v-if="state === 'listings'">
 		<div>
+			<div class="container">
+			  <h2>This is going to be our search page</h2>
+
+			  <!-- Code for the search bar and the dropdowns to filter our profiles-->
+
+			  <div class="row">
+				<div class="col-md-12">
+		            <div class="input-group" id="adv-search">
+		                <input type="text" class="form-control" placeholder="Location" v-model="searchLocation"/>
+		                <div class="input-group-btn">
+		                    <div class="btn-group" role="group">
+		                        <div class="dropdown dropdown-lg">
+		                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"></button>
+		                            <div class="dropdown-menu dropdown-menu-right" role="menu">
+		                                <form class="form-horizontal" role="form">
+		                                  <div class="form-group">
+		                                    <label for="filter">Profile Type</label>
+		                                    <select class="form-control" v-model="searchRole">
+		                                        <option value="owner">Owner</option>
+		                                        <option value="sitter">Sitter</option>
+		                                    </select>
+		                                  </div>
+		                                  <div class="form-group">
+		                                    <label for="filter">Pet Type</label>
+		                                    <select class="form-control" v-model="searchPet">
+		                                        <option value="" selected>---</option>
+		                                        <option value="Cat">Cat</option>
+		                                        <option value="Dog">Dog</option>
+		                                        <option value="Bird">Bird</option>
+		                                        <option value="Fish">Fish</option>
+		                                        <option value="Rodent">Rodent</option>
+		                                        <option value="Reptile">Reptile</option>
+		                                    </select>
+		                                  </div>
+		                                  <!-- this if we wanna do a search within the search-->
+		                                  <div class="form-group">
+		                                    <label for="contain">User Email</label>
+		                                    <input class="form-control" type="text" v-model="searchEmail" />
+		                                  </div>
+		                              		
+		                                  <button type="submit" class="btn btn-primary" v-on:click="executeSearch">
+                                              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                                          </button>
+		                                </form>
+		                            </div>
+		                        </div>
+		                        <button type="button" class="btn btn-primary" v-on:click="executeSearch">
+                                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                                </button>
+		                    </div>
+		                </div>
+		            </div>
+		          </div>
+		        </div>
+			</div>
+            <!-- Warning appears when no results to show. -->
+            <div v-if="profile_data.length == 0" class="alert alert-warning" role="alert">
+                Sorry, no listings match your query.
+            </div>
+			<!-- Code for loading and displaying all the profiles -->
+			<div class="profile_div" v-for="row in profile_data">
+			  <div class="panel-group">
+			    <div class="panel panel-default">
+			      <div class="panel-heading">Name: ${row.auth_user.first_name} ${row.auth_user.last_name}</div>
+			      <div class="panel-body">
+			      	Location: ${row.profile.city}
+			      </div>
+			      <div class="panel-body">
+			      	Rating: ${row.score ? $row.score + '/5' : 'Still Unrated'}
+			      </div>
+			    </div>
+			  </div>
+			</div>
+		</div>
+
 			<button v-on:click="change_state('home')">Back</button>
-			search
 		</div>
 	</div>
+
+	<!-- Changes the page to the contacts page -->
+	
 	<div v-if="state === 'contacts'">
 		<div>
 			<button v-on:click="change_state('home')">Back</button>

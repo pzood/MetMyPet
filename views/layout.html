@@ -5,12 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <link href="{{=URL('static','css/bootstrap.css')}}" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <!--<link href="{{=URL('static','css/stupid.css')}}" rel="stylesheet" type="text/css"/>-->
     <link href="{{=URL('static','css/custom.css')}}" rel="stylesheet" type="text/css"/>
     <link href="{{=URL('static','css/calendar.css')}}" rel="stylesheet" type="text/css"/>
     <link href="{{=URL('static','css/web2py.css')}}" rel="stylesheet" type="text/css"/>
     <link href="{{=URL('static','css/myapp.css')}}" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="{{=URL('static', 'font-awesome-4.6.3/css/font-awesome.min.css')}}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     {{include "web2py_ajax.html"}}
   </head>
   <body class="black">
@@ -24,7 +29,7 @@
     </main>
   </body>
   <script src="{{=URL('static','js/marked.min.js')}}"></script>
-  <script src="{{=URL('static','js/vue.min.js')}}"></script>
+  <script src="{{=URL('static','js/vue.js')}}"></script>
   {{block bottomjs}}{{end}}
   <script>
     jQuery('.social a').each(function(){var t=jQuery(this); t.attr('href',t.attr('href').replace('{url}',encodeURIComponent(window.location.href)));});

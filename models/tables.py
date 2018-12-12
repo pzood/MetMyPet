@@ -36,11 +36,13 @@ db.define_table('pet_owner',
                 Field('description', 'text'),
                 )
 
+pet_categories = ['Cat', 'Dog', 'Bird', 'Fish', 'Rodent', 'Reptile']
+
 db.define_table('pet',
-                Field('userID', 'references profile'),
-                Field('name', 'text'),
-                Field('species', 'text'),
-                Field('description', 'text'),
+                Field('userID', 'references auth_user'),
+                Field('pet_name', 'text', requires=IS_NOT_EMPTY()),
+                Field('species', default='category', requires=IS_IN_SET(pet_categories)),
+                Field('description', 'text', requires=IS_NOT_EMPTY()),
                 )
 
 db.define_table('sitter_review',
