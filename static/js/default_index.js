@@ -1,4 +1,7 @@
 // This is the js for the default/index.html view.
+//$.post(get_profiles_list_url);
+
+
 
 var app = function () {
 
@@ -12,10 +15,43 @@ var app = function () {
             a.push(b[i]);
         }
     };
+  
+    // Enumerates an array
+    var enumerate = function(v) { var k=0; return v.map(function(e) {e._idx = k++;});};
+
+    // Allows us to keep one page app
+    self.change_state = function(state_name) {
+        self.vue.state = state_name;
+    };
+
+    self.initSearch = function(type) {
+        // Reset fields to default
+        self.vue.searchLocation = '';
+        self.vue.searchRole = type;
+        self.vue.searchEmail = '';
+        self.vue.searchPet = '';
+
+        // Do default search
+        self.executeSearch();
+    };
+
+    self.executeSearch = function () {
+        $.getJSON(get_profiles_list_url,
+            {
+                role: self.vue.searchRole,
+                location: self.vue.searchLocation,
+                email: self.vue.searchEmail,
+                pet: self.vue.searchPet
+            },
+
+            function (data)
+            {
+                self.vue.cities = data.cities;
+                self.vue.profile_data = data.result;
+            });
+    };
 
     // Enumerates an array.
-    var enumerate = function (v) { var k = 0; return v.map(function (e) { e._idx = k++; }); };
-
     self.make_profile = function () {
         $.web2py.disableElement($("#make-profile"));
         let sent_fname = self.vue.fname;
@@ -268,8 +304,7 @@ var app = function () {
         console.log(logged_in_userID);
         console.log(self.vue.a_profile);
     };
-
-
+  
     // Complete as needed.
     self.vue = new Vue({
         el: "#main",
@@ -277,6 +312,10 @@ var app = function () {
         unsafeDelimiters: ['!{', '}'],
         data: {
             state: 'home',
+            searchLocation: '',
+            searchRole: '',
+            searchPet: '',
+            searchEmail: '',
             a_profile: [],
             a_sitter: [],
             a_owner: [],
@@ -324,10 +363,14 @@ var app = function () {
             add_pet_alert: self.add_pet_alert,
             reset_species: self.reset_species,
             get_image: self.get_image,
-            delete_pet: self.delete_pet
+            delete_pet: self.delete_pet,
+            change_state: self.change_state,
+            executeSearch: self.executeSearch,
+            initSearch: self.initSearch
         }
     });
     // self.get_profiles();
+
 
     return self;
 };
