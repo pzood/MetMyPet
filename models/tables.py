@@ -35,7 +35,6 @@ db.define_table('sitter',
                 )
 
 db.define_table('pet_owner',
-                # Field('profileID', 'references profile'),
                 Field('userID', 'references auth_user'),
                 Field('live', 'boolean', default=True),
                 Field('description', 'text', requires=IS_NOT_EMPTY()),
@@ -44,7 +43,6 @@ db.define_table('pet_owner',
 pet_categories = ['Cat', 'Dog', 'Bird', 'Fish', 'Rodent', 'Reptile']
 
 db.define_table('pet',
-                # Field('ownerID', 'references auth_user'),
                 Field('userID', 'references auth_user'),
                 Field('pet_name', 'text', requires=IS_NOT_EMPTY()),
                 Field('species', default='category', requires=IS_IN_SET(pet_categories)),

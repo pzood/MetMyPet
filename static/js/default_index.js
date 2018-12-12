@@ -47,14 +47,15 @@ var app = function () {
                     image: sent_image,
                 };
                 console.log(new_profile);
-                self.vue.profile_list.unshift(new_profile);
+                // self.vue.profile_list.unshift(new_profile);
                 //self.process_profiles();
             }
         );
+        $.web2py.enableElement($("#make-profile"));
         console.log("end input");
     };
 
-    //javascript for holding the image and allow for it to be passed to database
+    // javascript for holding the image and allow for it to be passed to database
     self.image_changed = function (event) {
         let input = event.target;
         let file = input.files[0];
@@ -89,14 +90,32 @@ var app = function () {
                 id: data.sitter_id,
                 description: sent_sitter_descript,
             };
-            self.vue.sitter_list.unshift(new_sitter);
+            // self.vue.sitter_list.unshift(new_sitter);
             //self.process_sitters();
-        }
-        );
+        });
     };
 
-    self.change_state = function (state_name) {
+    // Allows us to keep one page app
+    self.change_state = function(state_name) {
         self.vue.state = state_name;
+        
+    };
+
+    // Controls what profiles will load
+    self.load_listings = function(state_name, data_to_load){
+        self.vue.state = state_name;
+        $.getJSON(get_profiles_list_url, 
+            {
+                //Pretty sure this is where filters will be
+            }, 
+            function (data) 
+            {
+                //self.vue.profile_list = data.profile_list;
+                self.vue.cities = data.cities;
+                self.vue.profile_data = data.result;
+                console.log(data);
+            }
+        );
     };
 
     self.toggle_sitter_form = function () {
@@ -142,7 +161,7 @@ var app = function () {
                 id: data.owner_id,
                 description: sent_owner_descript,
             };
-            self.vue.owner_list.unshift(new_owner);
+            // self.vue.owner_list.unshift(new_owner);
             //self.process_owners();
         }
         );
@@ -203,16 +222,52 @@ var app = function () {
         });
     };
 
-    self.get_image = function (){
+    // //for testing images
+    // self.get_image = function (){
+    //     console.log(logged_in_userID);
+    //     $.getJSON(get_image_url, // https://host/app/api/get_image_url?post_id=4
+    //         {
+    //             profile_id: logged_in_userID,
+    //         },
+    //         function (data) {
+    //             self.vue.received_image = data.image_url;
+    //         });
+    //     console.log(self.vue.received_image);
+    // };
+
+    self.view_profile = function(user_id) {
+        $.getJSON(view_profile_url, {
+            userID: user_id,
+        }, function(data) {
+            self.vue.a_profile=data.currProfile;
+            self.vue.image=data.image_url;
+            console.log(data.currOwner!=undefined);
+            if ((data.currOwner!=undefined)&&(data.currSitter!=undefined)) {
+                self.vue.a_sitter=data.currOwner;
+                self.vue.a_owner=data.currSitter;
+                self.vue.a_pets=data.currPets;
+            }
+            else if (data.currOwner!=undefined) {
+                self.vue.a_owner=data.currOwner;
+            }
+            else if (data.currSitter!=undefined) {
+                self.vue.a_sitter=data.currSitter;
+            }
+            console.log(self.vue.a_owner);
+        });
+        if ((self.vue.a_sitter!=undefined)&&(self.vue.a_owner!=undefined)) {
+            self.vue.isOwner=true;
+            self.vue.isSitter=true;
+        }
+        else if (self.vue.a_owner!=undefined) {
+            self.vue.isOwner=true;
+        }
+        else if (self.vue.a_sitter!=undefined) {
+            self.vue.isSitter=true;
+        }
+        console.log(self.vue.isOwner);
         console.log(logged_in_userID);
-        $.getJSON(get_image_url, // https://host/app/api/get_image_url?post_id=4
-            {
-                profile_id: logged_in_userID,
-            },
-            function (data) {
-                self.vue.received_image = data.image_url;
-            });
-            console.log(self.vue.received_image);
+        console.log(self.vue.a_profile);
     };
 
     /* 
@@ -279,14 +334,19 @@ var app = function () {
         unsafeDelimiters: ['!{', '}'],
         data: {
             state: 'home',
+            a_profile: [],
+            a_sitter: [],
+            a_owner: [],
+            a_pets: [],
+            isOwner: false,
+            isSitter: false,
             contact: "",
             fname: "",
             lname: "",
             city_name: "",
-            profile_list: [],
-            sitter_list: [],
+            profile_data: [],
+            cities: [],
             sitter_description: "",
-            owner_list: [],
             owner_description: "",
             pet_list: [],
             pet_name: "",
@@ -300,12 +360,14 @@ var app = function () {
             received_image: null,
         },
         methods: {
+            change_state: self.change_state,
+            load_listings: self.load_listings,
             make_profile: self.make_profile,
             add_sitter: self.add_sitter,
             add_owner: self.add_owner,
             add_pet: self.add_pet,
             image_changed: self.image_changed,
-            return_profileid: self.return_profileid,
+            view_profile: self.view_profile,
             // get_profiles: self.get_profiles,
             is_user_adding: self.is_user_adding,
             //process_profiles: self.process_profiles,
