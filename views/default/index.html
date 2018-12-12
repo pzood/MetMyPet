@@ -33,8 +33,8 @@
         <h2>Probably Going to be Our Logo</h2>
         
         <button class="buttonPaw" v-on:click="change_state('profile')">Profile</button>		
-		<button class="buttonPaw" v-on:click="load_listings('listings','1')">Sitters</button>
-		<button class="buttonPaw" v-on:click="load_listings('listings','2')">Owners</button>
+		<button class="buttonPaw" v-on:click="change_state('listings');initSearch('sitter')">Sitters</button>
+		<button class="buttonPaw" v-on:click="change_state('listings');initSearch('owner')">Owners</button>
 		<button class="buttonPaw buttonPalm" v-on:click="change_state('contacts')">Contacts</button>
 		
 		<a class="btn padded" style="width:200px" href="{{=URL('default', 'user/logout')}}">Log Out</a>
@@ -72,7 +72,7 @@
 			  <div class="row">
 				<div class="col-md-12">
 		            <div class="input-group" id="adv-search">
-		                <input type="text" class="form-control" placeholder="Location" />
+		                <input type="text" class="form-control" placeholder="Location" v-model="searchLocation"/>
 		                <div class="input-group-btn">
 		                    <div class="btn-group" role="group">
 		                        <div class="dropdown dropdown-lg">
@@ -81,35 +81,38 @@
 		                                <form class="form-horizontal" role="form">
 		                                  <div class="form-group">
 		                                    <label for="filter">Profile Type</label>
-		                                    <select class="form-control">
-		                                        <option value="0" selected>---</option>
-		                                        <option value="1">Owner</option>
-		                                        <option value="2">Sitter</option>
+		                                    <select class="form-control" v-model="searchRole">
+		                                        <option value="owner">Owner</option>
+		                                        <option value="sitter">Sitter</option>
 		                                    </select>
 		                                  </div>
 		                                  <div class="form-group">
 		                                    <label for="filter">Pet Type</label>
-		                                    <select class="form-control">
+		                                    <select class="form-control" v-model="searchPet">
 		                                        <option value="0" selected>---</option>
 		                                        <option value="Cat">Cat</option>
 		                                        <option value="Dog">Dog</option>
-		                                        <option value="3">Bird</option>
-		                                        <option value="4">Fish</option>
-		                                        <option value="5">Rodent</option>
-		                                        <option value="6">Reptile</option>
+		                                        <option value="Bird">Bird</option>
+		                                        <option value="Fish">Fish</option>
+		                                        <option value="Rodent">Rodent</option>
+		                                        <option value="Reptile">Reptile</option>
 		                                    </select>
 		                                  </div>
 		                                  <!-- this if we wanna do a search within the search-->
 		                                  <div class="form-group">
 		                                    <label for="contain">User Email</label>
-		                                    <input class="form-control" type="text" />
+		                                    <input class="form-control" type="text" v-model="searchEmail" />
 		                                  </div>
 		                              		
-		                                  <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+		                                  <button type="submit" class="btn btn-primary" v-on:click="executeSearch">
+                                              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                                          </button>
 		                                </form>
 		                            </div>
 		                        </div>
-		                        <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+		                        <button type="button" class="btn btn-primary" v-on:click="executeSearch">
+                                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                                </button>
 		                    </div>
 		                </div>
 		            </div>

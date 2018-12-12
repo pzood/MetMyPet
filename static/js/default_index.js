@@ -1,10 +1,7 @@
 // This is the js for the default/index.html view.
 //$.post(get_profiles_list_url);
 
-$.post(get_profiles_list_url, {}, function (data) {
-    //self.vue.profile_list = data.profile_list;
-    //console.log(data);
-});
+
 
 var app = function() {
 
@@ -25,30 +22,28 @@ var app = function() {
     // Allows us to keep one page app
     self.change_state = function(state_name) {
         self.vue.state = state_name;
-        
     };
 
-    // Controls what profiles will load
-    self.load_listings = function(state_name, data_to_load){
-        self.vue.state = state_name;
+    self.initSearch = function(type) {
+        self.vue.searchRole = type;
+        self.executeSearch();
+    };
 
-        $.getJSON(get_profiles_list_url, 
+    self.executeSearch = function () {
+        $.getJSON(get_profiles_list_url,
             {
-                //Pretty sure this is where filters will be
-            }, 
+                role: self.vue.searchRole,
+                location: self.vue.searchLocation,
+                email: self.vue.searchEmail,
+                pet: self.vue.searchPet
+            },
 
-            function (data) 
+            function (data)
             {
-                
-                //self.vue.profile_list = data.profile_list;
                 self.vue.cities = data.cities;
                 self.vue.profile_data = data.result;
-                console.log(data);
-
             });
     };
-
-    
 
     // Complete as needed.
     self.vue = new Vue({
@@ -58,12 +53,17 @@ var app = function() {
         data: {
             state: 'home',
             profile_data: [],
-            cities: []
+            cities: [],
+            searchLocation: '',
+            searchRole: 0,
+            searchPet: 0,
+            searchEmail: '',
 
         },
         methods: {
             change_state: self.change_state,
-            load_listings: self.load_listings
+            executeSearch: self.executeSearch,
+            initSearch: self.initSearch
         }
 
     });
