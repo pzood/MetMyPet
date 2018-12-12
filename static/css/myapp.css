@@ -4,7 +4,7 @@ div.main_content {
 }
   
 #splash_background {
-  background-image: linear-gradient(to bottom right, blue, pink);
+  background-image: linear-gradient(to bottom right, lightblue, cyan);
 }
   
 #splash_title {

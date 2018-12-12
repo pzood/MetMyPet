@@ -48,6 +48,7 @@ var app = function () {
             {
                 self.vue.cities = data.cities;
                 self.vue.profile_data = data.result;
+                console.log(data);
             });
     };
 
@@ -137,23 +138,6 @@ var app = function () {
         
     };
 
-    // Controls what profiles will load
-    self.load_listings = function(state_name, data_to_load){
-        self.vue.state = state_name;
-        $.getJSON(get_profiles_list_url, 
-            {
-                //Pretty sure this is where filters will be
-            }, 
-            function (data) 
-            {
-                //self.vue.profile_list = data.profile_list;
-                self.vue.cities = data.cities;
-                self.vue.profile_data = data.result;
-                console.log(data);
-            }
-        );
-    };
-
     self.toggle_sitter_form = function () {
         self.vue.show_sitter_form = !self.vue.show_sitter_form;
         self.vue.show_owner_form = false;
@@ -199,8 +183,7 @@ var app = function () {
             };
             // self.vue.owner_list.unshift(new_owner);
             //self.process_owners();
-        }
-        );
+        });
     };
 
     self.add_pet = function () {
@@ -258,19 +241,6 @@ var app = function () {
         });
     };
 
-    // //for testing images
-    // self.get_image = function (){
-    //     console.log(logged_in_userID);
-    //     $.getJSON(get_image_url, // https://host/app/api/get_image_url?post_id=4
-    //         {
-    //             profile_id: logged_in_userID,
-    //         },
-    //         function (data) {
-    //             self.vue.received_image = data.image_url;
-    //         });
-    //     console.log(self.vue.received_image);
-    // };
-
     self.view_profile = function(user_id) {
         $.getJSON(view_profile_url, {
             userID: user_id,
@@ -300,14 +270,14 @@ var app = function () {
         else if (self.vue.a_sitter!=undefined) {
             self.vue.isSitter=true;
         }
+        console.log(user_id);
         console.log(self.vue.isOwner);
-        console.log(logged_in_userID);
         console.log(self.vue.a_profile);
     };
   
     // Complete as needed.
     self.vue = new Vue({
-        el: "#main",
+        el: "#vue-div",
         delimiters: ['${', '}'],
         unsafeDelimiters: ['!{', '}'],
         data: {
@@ -338,10 +308,11 @@ var app = function () {
             show_sitter_form: false,
             show_owner_form: false,
             show_both_form: false,
+            logged_in_userID: logged_in_userID,
         },
         methods: {
             change_state: self.change_state,
-            load_listings: self.load_listings,
+            // load_listings: self.load_listings,
             make_profile: self.make_profile,
             add_sitter: self.add_sitter,
             add_owner: self.add_owner,
@@ -349,24 +320,22 @@ var app = function () {
             image_changed: self.image_changed,
             view_profile: self.view_profile,
             // get_profiles: self.get_profiles,
-            is_user_adding: self.is_user_adding,
+            // is_user_adding: self.is_user_adding,
             //process_profiles: self.process_profiles,
-            process_sitter: self.process_sitter,
-            process_owners: self.process_owners,
+            // process_sitter: self.process_sitter,
+            // process_owners: self.process_owners,
             fun: self.fun,
             toggle_owner_form: self.toggle_owner_form,
             toggle_sitter_form: self.toggle_sitter_form,
             toggle_both_form: self.toggle_both_form,
             checkBlur: self.checkBlur,
             extend: self.extend,
-            enumerate: self.enumerate,
             add_pet_alert: self.add_pet_alert,
             reset_species: self.reset_species,
-            get_image: self.get_image,
             delete_pet: self.delete_pet,
             change_state: self.change_state,
             executeSearch: self.executeSearch,
-            initSearch: self.initSearch
+            initSearch: self.initSearch,
         }
     });
     // self.get_profiles();
@@ -379,4 +348,4 @@ var APP = null;
 
 // This will make everything accessible from the js console;
 // for instance, self.x above would be accessible as APP.x
-jQuery(function () { APP = app(); });
+jQuery(function() { APP = app(); });

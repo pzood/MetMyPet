@@ -6,10 +6,10 @@
    var add_sitter_URL = "{{=URL('api', 'add_sitter', user_signature=True)}}";
    var add_owner_URL = "{{=URL('api', 'add_owner', user_signature=True)}}";
    //var get_profiles_URL = "{{=URL('api', 'add_owner', user_signature=True)}}";
-   var add_pet_URL = "{{=URL('api', 'add_pet', user_signature=True)}}"
+   var add_pet_URL = "{{=URL('api', 'add_pet', user_signature=True)}}";
    var get_image_url = "{{=URL('api', 'get_image', user_signature=True)}}";
    var delete_pet_url = "{{=URL('api', 'delete_pet', user_signature=True)}}";
-   var view_profile_url = "{{=URL('api', 'view_profile')}}"
+   var view_profile_url = "{{=URL('api', 'view_profile', user_signature=True)}}";
    var get_profiles_list_url = "{{=URL('api', 'get_profiles_list')}}";
    var logged_in_userID = "{{=None if auth.user is None else auth.user.id}}";
 </script>
@@ -33,18 +33,18 @@
 </div>
 
 {{else:}}
-<div id="main">
+<div id="vue-div">
 	<!-- Changes the page to the listings page -->
    <div id="splash_background" style="width:100vw;height:100vh">
     <!--  ............ Begin Home Page .............-->
     
      <div v-if="state === 'home'">
-      <div id="content" class="jumbotron">
+      <div id="content" class="container">
         <h2>Probably Going to be Our Logo</h2>
-        <button class="buttonPaw" v-on:click="change_state('profile'); view_profile(logged_in_userID) ">Profile</button>
-        <button class="buttonPaw" v-on:click="load_listings('listings', '0')">Owners</button>
-        <button class="buttonPaw" v-on:click="load_listings('listings', '1')">Sitters</button>
-        <button class="buttonPaw buttonPalm" v-on:click="load_listings('listings', '3')">Contacts</button>
+        <button class="buttonPaw" v-on:click="change_state('profile'); view_profile(logged_in_userID)">Profile</button>
+        <button class="buttonPaw" v-on:click="change_state('listings'); initSearch('owner')">Owners</button>
+        <button class="buttonPaw" v-on:click="change_state('listings'); initSearch('sitter')">Sitters</button>
+        <button class="buttonPaw buttonPalm" v-on:click="change_state('contacts')">Contacts</button>
         <a class="btn padded" style="width:200px" href="{{=URL('default', 'user/logout')}}">Log Out</a>
       </div>
 
@@ -127,7 +127,6 @@
       <div class="align left">
          <div>
             <!-- <img v-if="post.post_image"  v-bind:src="post.post_image" width="30%" height="45%"/><br> -->
-            ${logged_in_userID}
             <p>Pet Name:</p>
             <textarea v-model="pet_name"></textarea>
             Pet Species:
@@ -135,7 +134,7 @@
             <div class="form-group">
                <label for="filter">Pet Type</label>
                <select v-model="pet_species" class="form-control">
-                  <option value="" selected>-----</option>
+                  <option value="">----</option>
                   <option value="Cat">Cat</option>
                   <option value="Dog">Dog</option>
                   <option value="Bird">Bird</option>
@@ -282,19 +281,8 @@
                 Location: ${row.profile.city}
               </div>
               <div class="panel-body">
-                Description: ${row.pet_owner.description}
-              </div>
-              <div class="panel-body">
                 Rating: ${row.score}
               </div>
-            </div>
-            <div class="panel panel-default">
-              <div class="panel-heading">Panel Header</div>
-              <div class="panel-body">Panel Content</div>
-            </div>
-            <div class="panel panel-default">
-              <div class="panel-heading">Panel Header</div>
-              <div class="panel-body">Panel Content</div>
             </div>
           </div>
         </div>
