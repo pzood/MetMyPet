@@ -1,4 +1,139 @@
 import datetime
+import logging
+import urllib, json
+
+# set up debug logger
+log = logging.getLogger("oatmeal")
+log.setLevel(logging.DEBUG)
+
+# Get the list of profiles I need
+def get_profiles_list():
+    # Must be set. Decides which one search to execute.
+    role = request.vars.role
+
+    # Optional search fields
+    location = request.vars.location
+    email = request.vars.email
+    pet = request.vars.pet
+
+    # Default location to user's location
+    if location == '':
+        location = db(db.profile.userID == auth.user.id).select(db.profile.city).first().city
+
+
+    # Get JSON from API
+    url = "http://getnearbycities.geobytes.com/GetNearbyCities?&radius=100&locationcode=" + location + ",%20CA&limit=5"
+    get = urllib.urlopen(url)
+    data = json.loads(get.read())
+
+    log.debug(data)
+
+    # Get 5 closest cities in order by distance
+    cities = []
+    for city in data:
+        if len(city) > 0:
+            cities.append(city[1])
+
+    result = []
+    if role == 'sitter':
+        result = get_sitters_list(cities, email = email)
+    elif role == 'owner':
+        result = get_owners_list(cities, email = email, species = pet)
+
+    return response.json(dict(cities = cities, result=result))
+
+# Get the sitters I need by city distance order
+# Get the sitters I need by city distance order
+def get_sitters_list(cities, email = ''):
+    # Join auth_user, profile, and sitter
+    set = db(db.auth_user.id == db.profile.userID)
+    set = set(db.auth_user.id == db.sitter.userID)
+    set = set(db.sitter.live == True)
+    rows = []
+
+    if email != '':
+        # Filter by email
+        set = set(db.auth_user.email == email)
+
+    # Get people in order of city
+    for city in cities:
+        # Match city and select
+        temp = set(db.profile.city == city)
+        temp = temp.select(db.auth_user.ALL, db.profile.ALL, db.sitter.ALL)
+
+        # Build new table with extra info
+        for row in temp :
+            id = row['auth_user']['id']
+            avgScore = db.sitter_review.rating.avg()
+            row['score'] = db(db.sitter_review.revieweeID == id).select(avgScore).first()[avgScore]
+            rows.append(row)
+
+    return rows
+
+# Get the owners I need by city distance order
+# Get the owners I need by city distance order
+def get_owners_list(cities, email = '', species = ''):
+    # Join auth_user, profile, and pet_owner
+    set = db(db.auth_user.id == db.profile.userID)
+    set = set(db.auth_user.id == db.pet_owner.userID)
+    set = set(db.pet_owner.live == True)
+
+    if email != '':
+        # Filter by email
+        set = set(db.auth_user.email == email)
+
+    rows = []
+
+    # Get people in order of city
+    for city in cities:
+        # Match city and select
+        temp = set(db.profile.city == city)
+        temp = temp.select(db.auth_user.ALL, db.profile.ALL, db.pet_owner.ALL)
+
+        # Build new table with extra info
+        for row in temp :
+            id = row['auth_user']['id']
+
+            avgScore = db.owner_review.rating.avg()
+            row['score'] = db(db.owner_review.revieweeID == id).select(avgScore).first()[avgScore]
+
+            pets = db(db.pet.userID == id)
+            if (species != ''):
+                pets = pets(db.pet.species == species)
+            pets = pets.select()
+            row['pets'] = []
+            for pet in pets:
+                row['pets'].append(pet)
+            rows.append(row)
+
+    return rows
+
+
+# Not sure what this code is? - Maritza
+# @auth.requires_signature()
+# def edit_profile():
+#   db((db.profile.id==request.vars.id)&(db.profile.userID==auth.user.id)).update(
+#       first_name=request.vars.first_name,
+#       last_name=request.vars.last_name,
+#       contact_info=request.vars.contact_info,
+#       city=request.vars.city,
+#       last_update=get_current_time(),
+#   )
+#   return "edited the profile"
+
+
+def view_profile():
+    user_id=request.vars.userID
+    currProfile=db(db.profile.userID==user_id).select()
+    profilePic=db(db.profile.userID==user_id).select().first()
+    image_url = profilePic.image
+    currSitter=db(db.sitter.userID==user_id).select()
+    currOwner=db(db.pet_owner.userID==user_id).select()
+    currPets=db(db.pet.userID==user_id).select()
+    logger.info(currOwner)
+    return response.json(dict(currProfile=currProfile, image_url=image_url, currSitter=currSitter, currOwner=currOwner, currPets=currPets))
+
+
 
 # Here go your api methods.
 @auth.requires_signature()
@@ -13,66 +148,6 @@ def make_profile():
         city = request.vars.city,
     )
     return response.json(dict(profile_id=profile_id))
-
-# @auth.requires_signature()
-# def edit_profile():
-#   db((db.profile.id==request.vars.id)&(db.profile.userID==auth.user.id)).update(
-#       first_name=request.vars.first_name,
-#       last_name=request.vars.last_name,
-#       contact_info=request.vars.contact_info,
-#       city=request.vars.city,
-#       last_update=get_current_time(),
-#   )
-#   return "edited the profile"
-
-# def get_profiles():
-#   results=[]
-#   if auth.user is None:
-#       rows = db().select(db.profile.ALL)
-#       for row in rows:
-#           get_results = (dict(
-#               id=row.id,
-#               first_name=row.first_name,
-#               last_name=row.last_name,
-#               contact_info=row.contact_info,
-#               city=row.city,
-#               last_update=row.last_update,
-#           ))
-#           results.append(get_results)
-#   else:
-#       rows = db().select(db.auth_user.ALL, 
-#                       db.profile.ALL, 
-#                       join=[
-#                           db.auth_user.on(db.auth_user.id==db.profile.userID), 
-#                           db.profile.on((db.profile.id==db.pet_owner.profileID) & (db.profile.id==db.sitter.profileID)),
-#                       ])
-#       for row in rows:
-#           results.append(dict(
-#               id=row.id,
-#               first_name=row.first_name,
-#               last_name=row.last_name,
-#               contact_info=row.contact_info,
-#               city=row.city,
-#               last_update=row.last_update,
-#           ))
-#   return response.json(dict(profile_list=results))
-
-
-# def get_owners():
-#   rows = db().select(db.auth_user.ALL, db.profile.ALL, db.owner.ALL, 
-#                      join=[
-#                           db.auth_user.on(db.auth_user.id==db.profile.userID), 
-#                           db.profile.on(db.profile.id==db.pet_owner.profileID),
-#                       ])
-
-
-# def get_sitters():
-#   rows = db().select(db.auth_user.ALL, db.profile.ALL, db.sitter.ALL, 
-#                      join=[
-#                           db.auth_user.on(db.auth_user.id==db.profile.userID), 
-#                           db.profile.on(db.profile.id==db.sitter.profileID),
-#                       ])
-
 
 # for sitter form
 @auth.requires_signature()
@@ -106,3 +181,27 @@ def add_pet():
         description = request.vars.description
     )
     return response.json(dict(pet_entry = pet_entry))
+
+
+def get_image():
+    profile = db(db.profile.userID == auth.user.id).select().first()
+    image_url = profile.image
+    return response.json(dict(image_url=image_url))
+
+def get_petlist():
+    pet_list = db(db.pet.userID == auth.user.id).select()
+    return response.json(dict(pet_list = pet_list))
+
+def delete_pet():
+    db(db.pet.id == request.vars.id).delete()
+    return "ok"
+
+
+
+
+
+
+
+
+
+

@@ -12,10 +12,12 @@
 import datetime
 
 def get_user_email():
-    return None if auth.user is None else auth.user.email
+    return auth.user.email if auth.user else None
 
 def get_current_time():
     return datetime.datetime.utcnow()
+
+auth.enable_record_versioning(db)
 
 db.define_table('profile',
                 Field('userID', 'references auth_user'),
@@ -28,37 +30,36 @@ db.define_table('profile',
                 )
 
 db.define_table('sitter',
-                # Field('profileID', 'references profile'),
                 Field('userID', 'references auth_user'),
                 Field('live', 'boolean', default=True),
                 Field('description', 'text'),
                 )
 
 db.define_table('pet_owner',
-                # Field('profileID', 'references profile'),
                 Field('userID', 'references auth_user'),
-                Field('live', 'boolean', default=True),
+                Field('live', 'boolean'),
                 Field('description', 'text'),
                 )
+pet_categories =['Cat', 'Dog', 'Bird', 'Fish', 'Rodent','Reptile']
 
 db.define_table('pet',
-                Field('ownerID', 'references pet_owner'),
-                Field('pet_name', 'text'),
-                Field('species', 'text'),
-                Field('description', 'text'),
+                Field('userID', 'references auth_user'),
+                Field('pet_name', 'text', requires=IS_NOT_EMPTY()),
+                Field('species', default='category', requires=IS_IN_SET(pet_categories)),
+                Field('description', 'text', requires=IS_NOT_EMPTY()),
                 )
 
 db.define_table('sitter_review',
-                Field('reviewerID', 'references profile'),
-                Field('revieweeID', 'references profile'),
-                Field('rating', 'integer'),
+                Field('reviewerID', 'references auth_user'),
+                Field('revieweeID', 'references auth_user'),
+                Field('rating', 'float'),
                 Field('feedback', 'text'),
                 )
 
 db.define_table('owner_review',
-                Field('reviewerID', 'references profile'),
-                Field('revieweeID', 'references profile'),
-                Field('rating', 'integer'),
+                Field('reviewerID', 'references auth_user'),
+                Field('revieweeID', 'references auth_user'),
+                Field('rating', 'float'),
                 Field('feedback', 'text'),
                 )
 # after defining tables, uncomment below to enable auditing

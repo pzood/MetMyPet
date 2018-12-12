@@ -1,5 +1,6 @@
 // This is the js for the default/index.html view.
 
+
 var app = function () {
 
     var self = {};
@@ -12,9 +13,38 @@ var app = function () {
             a.push(b[i]);
         }
     };
+    
 
     // Enumerates an array.
-    var enumerate = function (v) { var k = 0; return v.map(function (e) { e._idx = k++; }); };
+    var enumerate = function(v) { var k=0; return v.map(function(e) {e._idx = k++;});};
+
+    self.initSearch = function(type) {
+        // Reset fields to default
+        self.vue.searchLocation = '';
+        self.vue.searchRole = type;
+        self.vue.searchEmail = '';
+        self.vue.searchPet = '';
+
+        // Do default search
+        self.executeSearch();
+    };
+
+    self.executeSearch = function () {
+        $.getJSON(get_profiles_list_url,
+            {
+                role: self.vue.searchRole,
+                location: self.vue.searchLocation,
+                email: self.vue.searchEmail,
+                pet: self.vue.searchPet
+            },
+
+            function (data)
+            {
+                self.vue.cities = data.cities;
+                self.vue.profile_data = data.result;
+            });
+    };
+
 
     self.make_profile = function() {
         $.web2py.disableElement($("#make-profile"));
@@ -119,7 +149,6 @@ var app = function () {
     };
 
     self.add_owner = function() {
-        console.log("add_owner called");
         let sent_owner_descript = self.vue.owner_description
         $.post(add_owner_URL, {
                 description: sent_owner_descript,
@@ -136,33 +165,122 @@ var app = function () {
         );
     };
 
-    // self.add_pet = function(p_idx, o_idx) {
-    //     let o = self.vue.profile_list[p_idx].owner_list[o_idx];
-    //     let new_pet = {
-    //         ownerID: o.id,
-    //         pet_name: o.pet_name,
-    //         species: o.species,
-    //         description: o.pet_description,
-    //     };
-    //     $.post(add_pet_URL, new_pet, function(response) {
-    //         new_pet['id']=response.id;
-    //         o.unshift(new_pet);
-    //         self.process_owners(p_idx);
-    //     });
-    //     o.pet_description="";
-    // };
-
-    self.edit_profile = function (p_idx) {
-        let p = self.vue.profile_list[p_idx];
-        $.post(edit_profile_URL, {
-            id: p.id,
-            first_name: p.first_name,
-            last_name: p.last_name,
-            contact_info: p.contact_info,
-            city: p.city,
+    self.add_pet = function () {
+        let sent_name = self.vue.pet_name;
+        let sent_species = self.vue.pet_species;
+        let sent_description = self.vue.pet_description;
+        $.post(add_pet_URL, {
+            pet_name: sent_name,
+            species: sent_species,
+            description: sent_description,
+        }, function (data) {
+            self.vue.pet_name = "";
+            self.vue.pet_species = "";
+            self.vue.pet_description = "";
+            let new_pet = {
+                id: data.pet_id,
+                pet_name: sent_name,
+                species: sent_species,
+                description: sent_description,
+            };
+            console.log(new_pet);
+            self.vue.pet_list.unshift(new_pet);
+            self.process_pets();
         });
-        console.log("updated");
     };
+
+    self.add_pet_alert = function () {
+        alert("Please Select A Pet!");
+    };
+
+    self.reset_species = function () {
+        self.vue.pet_species = "";
+    };
+
+    self.get_petlist = function(){
+        $.getJSON(get_petlist_url,function(response){
+            self.vue.pet_list = response.pet_list;
+            self.process_pets();
+        });
+    };
+
+    self.process_pets = function(){
+        var i=0;
+        self.vue.pet_list.map(function(e){
+            Vue.set(e,'idx', i++);
+        });
+    };
+
+    self.delete_pet = function(idx){
+        $.post(delete_pet_url, {
+            id: self.vue.pet_list[idx].id,
+        }, function(response){
+            self.vue.pet_list.splice(idx,1);
+            self.process_pets();
+        });
+    };
+
+
+    self.get_image = function (){
+        console.log(logged_in_userID);
+        $.getJSON(get_image_url, // https://host/app/api/get_image_url?post_id=4
+            {
+                profile_id: logged_in_userID,
+            },
+            function (data) {
+                self.vue.received_image = data.image_url;
+            });
+            console.log(self.vue.received_image);
+    };
+
+    self.view_profile = function(user_id) {
+        $.getJSON(view_profile_url, {
+            userID: user_id,
+        }, function(data) {
+            self.vue.a_profile=data.currProfile;
+            self.vue.image=data.image_url;
+            console.log(data.currOwner!=undefined);
+            if ((data.currOwner!=undefined)&&(data.currSitter!=undefined)) {
+                self.vue.a_sitter=data.currOwner;
+                self.vue.a_owner=data.currSitter;
+            }
+            else if (data.currOwner!=undefined) {
+                self.vue.a_owner=data.currOwner;
+            }
+            else if (data.currSitter!=undefined) {
+                self.vue.a_sitter=data.currSitter;
+            }
+            console.log(self.vue.a_owner);
+        });
+        if ((self.vue.a_sitter!=undefined)&&(self.vue.a_owner!=undefined)) {
+            self.vue.isOwner=true;
+            self.vue.isSitter=true;
+        }
+        else if (self.vue.a_owner!=undefined) {
+            self.vue.isOwner=true;
+        }
+        else if (self.vue.a_sitter!=undefined) {
+            self.vue.isSitter=true;
+        }
+        console.log(self.vue.isOwner);
+        console.log(logged_in_userID);
+        console.log(self.vue.a_profile);
+    };
+
+
+
+
+    // self.edit_profile = function (p_idx) {
+    //     let p = self.vue.profile_list[p_idx];
+    //     $.post(edit_profile_URL, {
+    //         id: p.id,
+    //         first_name: p.first_name,
+    //         last_name: p.last_name,
+    //         contact_info: p.contact_info,
+    //         city: p.city,
+    //     });
+    //     console.log("updated");
+    // };
 
     self.fun = function () {
         alert("hello");
@@ -171,6 +289,23 @@ var app = function () {
     self.change_state = function (state_name) {
         self.vue.state = state_name;
     };
+
+   self.load_listings = function (state_name, data_to_Load) {
+       self.vue.state = state_name;
+       $.getJSON(get_profiles_list_url, 
+        {
+            //Pretty sure this is where filters will be
+        }, 
+
+        function (data) 
+        {
+
+            self.vue.cities = data.cities;
+            self.vue.profile_data = data.result;
+            console.log(data);
+
+        });
+   };
 
     self.toggle_sitter_form = function () {
         self.vue.show_sitter_form = !self.vue.show_sitter_form;
@@ -200,6 +335,26 @@ var app = function () {
         }
     };
 
+    self.get_profile = function(userID){
+        $.getJSON(get_myProfile_url,
+            function(data){
+                self.vue.profiles = data.profiles;
+            });
+        console.log("got my list");
+    };
+
+    self.viewProfile= function(userID){
+        $.getJSON(get_myProfile_url,
+        {
+            userID: userID,
+        },
+        function (data)
+        {
+            self.vue.currProfile = data.currProfile;
+        });
+        alert(userID);
+    };
+
 
     // Complete as needed.
     self.vue = new Vue({
@@ -208,34 +363,53 @@ var app = function () {
         unsafeDelimiters: ['!{', '}'],
         data: {
             state: 'home',
+            a_profile: [],
+            a_sitter: [],
+            a_onwer: [],
+            a_pets: [],
+            isOwner: false,
+            isSitter: false,
+            profile_data: [],
+            cities: [],
+            searchLocation: '',
+            searchRole: '',
+            searchPet: '',
+            searchEmail: '',
             contact: "",
             fname: "",
             lname: "",
             city_name: "",
-            profile_list: [],
-            sitter_list: [],
             sitter_description: "",
             owner_list: [],
             owner_description: "",
-            makingProfile: false,
+            //makingProfile: false,
+            pet_list: [],
+            pet_name: "",
+            pet_species: "",
+            pet_description: "",
             image: null,
             show_sitter_form: false,
             show_owner_form: false,
             show_both_form: false,
+        
+            
         },
         methods: {
+            change_state: self.change_state,
+            executeSearch: self.executeSearch,
+            initSearch: self.initSearch,
             make_profile: self.make_profile,
             add_sitter: self.add_sitter,
             add_owner: self.add_owner,
             add_pet: self.add_pet,
             image_changed: self.image_changed,
-            return_profileid: self.return_profileid,
-            // get_profiles: self.get_profiles,
-            is_user_adding: self.is_user_adding,
+            view_profile: self.view_profile,
+            //return_profileid: self.return_profileid,
+           // is_user_adding: self.is_user_adding,
             //process_profiles: self.process_profiles,
-            process_sitter: self.process_sitter,
-            process_owners: self.process_owners,
-            edit_profile: self.edit_profile,
+           // process_sitter: self.process_sitter,
+           // process_owners: self.process_owners,
+            //edit_profile: self.edit_profile,
             fun: self.fun,
             toggle_owner_form: self.toggle_owner_form,
             toggle_sitter_form: self.toggle_sitter_form,
@@ -243,9 +417,17 @@ var app = function () {
             checkBlur: self.checkBlur,
             extend: self.extend,
             enumerate: self.enumerate,
+            add_pet_alert: self.add_pet_alert,
+            reset_species: self.reset_species,
+            get_image: self.get_image,
+            delete_pet: self.delete_pet,
+            load_listings: self.load_listings,
+            viewProfile: self.viewProfile,
         }
     });
     // self.get_profiles();
+
+   //self.get_petList();
 
     return self;
 };
