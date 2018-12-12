@@ -1,5 +1,7 @@
 {{extend 'layout.html'}}
 {{block head}}
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 <script src="{{=URL('static', 'js/vue.js')}}"></script>
 <script>
    var make_profile_URL = "{{=URL('api', 'make_profile', user_signature=True)}}";
@@ -57,25 +59,35 @@
       go to editProfile -->
       <!-- For rendering the logged in user profile. Had to cheese it with a 1 element array-->
       <div v-for="person in a_profile">
-         <img v-bind:src="person.image" width="45%" height="45%">
-         <div class="panel-default">Name: ${person.first_name} ${person.last_name}</div>
-         <div class="panel-default">Contact Info: ${person.contact_info}</div>
-         <div class="panel-default">City: ${person.city}</div>
-         <div v-if="isSitter">
-            <div v-for="sitter in a_sitter">
-               <div class="panel-default">Sitter: ${sitter.description}</div>
-            </div>
-         </div>
-         <div v-if="isOwner">
-            <div v-for="owner in a_owner">
-               <div class="panel-default">Owner: ${owner.description}</div>
-            </div>
+         
+         <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad" >
+   
+            <div class="panel panel-info">
+               <div><img v-bind:src="person.image" width="45%" height="45%"></div>
+               <div class="panel-heading">
+                  <h3 class="panel-title">Name: ${person.first_name} ${person.last_name}</h3>
+                  <div class="panel-row">Contact Info: ${person.contact_info}</div>
+                  <div class="panel-row">City: ${person.city}</div>
+               </div>
+               <div class="panel-body">
+                  <div v-if="isSitter">
+                  <div v-for="sitter in a_sitter">
+                     <div class="panel-row">Sitter: ${sitter.description}</div>
+                  </div>
+               </div>
+               <div v-if="isOwner">
+                  <div v-for="owner in a_owner">
+                     <div class="panel-row">Owner: ${owner.description}</div>
+                  </div>
             <!-- <div v-if="a_pets.length>0">
-               <div v-for="pet in a_pets">Pets</div>
-            </div>
-            <div v-if="a_pet.length===0">
+                  <div v-for="pet in a_pets">Pets</div>
+                  </div>
+               <div v-if="a_pet.length===0">
                
-            </div> -->
+               </div> -->
+               </div>
+               </div>
+            </div>
          </div>
       </div>
       <div id="backButton">
@@ -238,7 +250,7 @@
                           <div class="form-group">
                             <label for="filter">Profile Type</label>
                             <select class="form-control">
-                              <option value="0" selected>---</option>
+                              <option value="0">---</option>
                               <option value="1">Owner</option>
                               <option value="2">Sitter</option>
                             </select>
@@ -246,7 +258,7 @@
                           <div class="form-group">
                             <label for="filter">Pet Type</label>
                             <select class="form-control">
-                              <option value="0" selected>---</option>
+                              <option value="0">---</option>
                               <option value="1">Cat</option>
                               <option value="2">Dog</option>
                               <option value="3">Bird</option>
