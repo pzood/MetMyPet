@@ -19,21 +19,25 @@ def get_current_time():
 
 db.define_table('profile',
                 Field('userID', 'references auth_user'),
+                Field('first_name', 'text', requires=IS_NOT_EMPTY()),
+                Field('last_name', 'text', requires=IS_NOT_EMPTY()),
                 Field('contact_info', 'text', default=get_user_email()),
-                Field('city', 'text'),
+                Field('city', 'text', requires=IS_NOT_EMPTY()),
+                Field('image', 'text'),
                 Field('last_update', 'datetime', update=get_current_time()),
                 )
 
 db.define_table('sitter',
+                # Field('profileID', 'references profile'),
                 Field('userID', 'references auth_user'),
-                Field('live', 'boolean'),
-                Field('description', 'text'),
+                Field('live', 'boolean', default=True),
+                Field('description', 'text', requires=IS_NOT_EMPTY()),
                 )
 
 db.define_table('pet_owner',
                 Field('userID', 'references auth_user'),
-                Field('live', 'boolean'),
-                Field('description', 'text'),
+                Field('live', 'boolean', default=True),
+                Field('description', 'text', requires=IS_NOT_EMPTY()),
                 )
 
 pet_categories = ['Cat', 'Dog', 'Bird', 'Fish', 'Rodent', 'Reptile']
@@ -42,6 +46,7 @@ db.define_table('pet',
                 Field('userID', 'references auth_user'),
                 Field('pet_name', 'text', requires=IS_NOT_EMPTY()),
                 Field('species', default='category', requires=IS_IN_SET(pet_categories)),
+                # Field('species', 'text', requires=IS_NOT_EMPTY()),
                 Field('description', 'text', requires=IS_NOT_EMPTY()),
                 )
 
