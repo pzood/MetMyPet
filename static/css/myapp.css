@@ -4,19 +4,20 @@ div.main_content {
 }
   
 #splash_background {
-  background-image: linear-gradient(to bottom right, lightblue, cyan);
+  background-image: linear-gradient(to bottom right, pink, lightblue);
 }
   
 #splash_title {
   width: 100%;
   height: 100%;
+  padding: 5px;
   line-height: 20vh;
   text-align: center;
   vertical-align: middle;
   font-size: 14vw;
   color:white;
-  --x: 3px;
-  --y: 3px;
+  --x: 1px;
+  --y: 1px;
   text-shadow: var(--x) var(--y) mediumpurple;
 }
   
@@ -62,7 +63,31 @@ div.main_content {
   margin: 4px 2px;
   border-radius: 75%;
 }
-  
+
+.greet{
+  font-family: Monaco;
+  padding: 20px;
+}
+
+.moniker{
+  padding:30px;
+  background-color:#581845;
+}
+
+.pets{
+  font-family: Monaco;
+}
+
+.proftype{
+  padding:20px;
+  border-width: 2px;
+}
+
+.ownersitter{
+  align-self: left;
+  background-color: white;
+}
+
 .buttonPalm{
   padding: 60px;
 }
