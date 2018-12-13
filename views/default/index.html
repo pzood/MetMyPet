@@ -40,26 +40,23 @@
 <div id="vue-div">
 	<!-- Changes the page to the listings page -->
 	<div id="splash_background" style="width:100vw;height:100vh">
-		<div id="splash_title">
-	  		<div>PETMET</div>
-	
+		
 	 <!--  ............ Begin Home Page .............-->
 	 
-		  <div v-if="state === 'home'">
-			<div id="buttonPawContent" class="container" style="text-align:center;">
+	  <div v-if="state === 'home'">
+		<div id="buttonPawContent" class="container" style="text-align:center;">
 
 
-	        <span>
-			  <button class="buttonPaw" v-on:click="change_state('profile'); view_profile(logged_in_userID)">Profile</button>
-			  <button class="buttonPaw" v-on:click=" initSearch('owner');change_state('listings');">Owners</button>
-			  <button class="buttonPaw" v-on:click="initSearch('sitter');change_state('listings');">Sitters</button>
-	        </span>
-			  <button class="buttonPaw buttonPalm" v-on:click="initContacts();change_state('listings');">Contacts</button>
-			  <a class="btn padded" style="width:200px" href="{{=URL('default', 'user/logout')}}">Log Out</a>
-			</div>
-
-		  </div>
+        <span>
+		  <button class="buttonPaw" v-on:click="change_state('profile'); view_profile(logged_in_userID)">Profile</button>
+		  <button class="buttonPaw" v-on:click=" initSearch('owner');change_state('listings');">Owners</button>
+		  <button class="buttonPaw" v-on:click="initSearch('sitter');change_state('listings');">Sitters</button>
+        </span>
+		  <button class="buttonPaw buttonPalm" v-on:click="initContacts();change_state('listings');">Contacts</button>
+		  <a class="btn padded" style="width:200px" href="{{=URL('default', 'user/logout')}}">Log Out</a>
 		</div>
+
+	 </div>
 	 <!-- ............End Home Page .............................-->
 
 	 <!-- ............View Profile ................................-->
