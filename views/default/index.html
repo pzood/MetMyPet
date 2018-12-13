@@ -23,7 +23,7 @@
 	<div id="splash_title">
 	  <div>PETMET</div>
 	</div>
-	<div id="content" class="jumbotron">
+	<div id="content">
 		  <span class="half">
 				<p>Welcome to PetMet. Please sign up and make a profile if you haven't already.</p>
 		  </span>
@@ -35,7 +35,7 @@
 </div>
 
 {{else:}}
-<div id="vue-div">
+<div id="main">
 	<!-- Changes the page to the listings page -->
 	<div id="splash_background" style="width:100vw;height:100vh">
 	 <!--  ............ Begin Home Page .............-->
@@ -62,8 +62,8 @@
 			<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad" >
 	
 				<div class="panel panel-info">
-					<div><img v-bind:src="person.image" width="45%" height="45%"></div>
-					<div class="panel-heading">
+					<div class="panel-heading"><img v-bind:src="person.image" width="200px" height="200px" align="center"></div>
+					<div class="panel-body">
 						<h3 class="panel-title">Name: ${person.first_name} ${person.last_name}</h3>
 						<div class="panel-row">Contact Info: ${person.contact_info}</div>
 						<div class="panel-row">City: ${person.city}</div>
@@ -77,6 +77,13 @@
 						<div v-if="isOwner">
 							<div v-for="owner in a_owner">
 								<div class="panel-row">Owner: ${owner.description}</div>
+							</div>
+						</div>
+						<div v-if="hasPets">
+							<div class="viewProfile" v-for="pet in a_pets">
+								<div class="panel-row">Pet: ${pet.pet_name}</div>
+								<div class="panel-row">Species: ${pet.species}</div>
+								<div class="panel-row">Description: ${pet.description}</div>
 							</div>
 						</div>
 					</div>
@@ -104,7 +111,7 @@
 					Last Name:
 				</div>
 				<div class="form threequarters">
-					<input v-model="lname" />
+					<input v-model="lname"/>
 				</div>
 			</div>
 			<div class="container form_row padded">

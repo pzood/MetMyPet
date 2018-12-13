@@ -80,7 +80,7 @@ var app = function () {
 					image: sent_image,
 				};
 				console.log(new_profile);
-				// self.vue.profile_list.unshift(new_profile);
+				//self.vue.profile_list.unshift(new_profile);
 				//self.process_profiles();
 			}
 		);
@@ -122,7 +122,7 @@ var app = function () {
 				id: data.sitter_id,
 				description: sent_sitter_descript,
 			};
-			// self.vue.sitter_list.unshift(new_sitter);
+			//self.vue.sitter_list.unshift(new_sitter);
 			//self.process_sitters();
 		});
 	};
@@ -130,7 +130,6 @@ var app = function () {
 	// Allows us to keep one page app
 	self.change_state = function(state_name) {
 		self.vue.state = state_name;
-		
 	};
 
 	self.toggle_sitter_form = function () {
@@ -246,33 +245,45 @@ var app = function () {
 			if ((data.currOwner.length>0)&&(data.currSitter.length>0)) {
 				self.vue.a_sitter=data.currOwner;
 				self.vue.a_owner=data.currSitter;
+				if(data.currPets.length>0) {
+					self.vue.a_pets=data.currPets;
+				}
 			}
 			else if (data.currOwner.length>0) {
 				self.vue.a_owner=data.currOwner;
+				if(data.currPets.length>0) {
+					self.vue.a_pets=data.currPets;
+				}
 			}
 			else if (data.currSitter.length>0) {
 				self.vue.a_sitter=data.currSitter;
 			}
+			console.log(data.currPets);
 			console.log(self.vue.a_owner);
 		});
 		if ((self.vue.a_sitter!=undefined)&&(self.vue.a_owner!=undefined)) {
 			self.vue.isOwner=true;
 			self.vue.isSitter=true;
+			if(self.vue.a_pets!=undefined) {
+				self.vue.hasPets=true;
+			}
 		}
 		else if (self.vue.a_owner!=undefined) {
 			self.vue.isOwner=true;
+			if(self.vue.a_pets!=undefined) {
+				self.vue.hasPets=true;
+			}
 		}
 		else if (self.vue.a_sitter!=undefined) {
 			self.vue.isSitter=true;
 		}
-		console.log(user_id);
-		console.log(self.vue.is);
+		console.log(self.vue.hasPets);
 		console.log(self.vue.a_profile);
 	};
   
 	// Complete as needed.
 	self.vue = new Vue({
-		el: "#vue-div",
+		el: "#main",
 		delimiters: ['${', '}'],
 		unsafeDelimiters: ['!{', '}'],
 		data: {
@@ -287,6 +298,7 @@ var app = function () {
 			a_pets: [],
 			isOwner: false,
 			isSitter: false,
+			hasPets: false,
 			contact: "",
 			fname: "",
 			lname: "",
