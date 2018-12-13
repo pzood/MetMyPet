@@ -65,7 +65,6 @@ def delete_pet():
 
 def view_profile():
 	user_id=request.vars.userID
-	logger.info(user_id)
 	currProfile=db(db.profile.userID==user_id).select()
 	profilePic=db(db.profile.userID==user_id).select().first()
 	if profilePic is not None:
@@ -74,11 +73,11 @@ def view_profile():
 		image_url=None
 	currSitter=db(db.sitter.userID==user_id).select()
 	currOwner=db(db.pet_owner.userID==user_id).select()
-	logger.info(currOwner)
 	currPets=db(db.pet.userID==user_id).select()
 	return response.json(dict(currProfile=currProfile, image_url=image_url, currSitter=currSitter, currOwner=currOwner, currPets=currPets))
 
 # Get the list of profiles I need
+@auth.requires_login()
 def get_profiles_list():
 	# Must be set. Decides which one search to execute.
 	role = request.vars.role
@@ -98,8 +97,6 @@ def get_profiles_list():
 	get = urllib.urlopen(url)
 	data = json.loads(get.read())
 
-	log.debug(data)
-
 	# Get 5 closest cities in order by distance
 	cities = []
 	for city in data:
@@ -110,6 +107,7 @@ def get_profiles_list():
 		result = get_sitters_list(cities, email = email)
 	elif role == 'owner':
 		result = get_owners_list(cities, email = email, species = pet)
+
 	return response.json(dict(cities = cities, result=result))
 
 # Get the sitters I need by city distance order
@@ -133,6 +131,7 @@ def get_sitters_list(cities, email = ''):
 			id = row['auth_user']['id']
 			avgScore = db.sitter_review.rating.avg()
 			row['score'] = db(db.sitter_review.revieweeID == id).select(avgScore).first()[avgScore]
+			row['fav'] = False if db(db.favorite.favoriterID == auth.user.id)(db.favorite.favoriteeID == id).select().first() is None else True
 			rows.append(row)
 	return rows
 
@@ -158,12 +157,47 @@ def get_owners_list(cities, email = '', species = ''):
 			id = row['auth_user']['id']
 			avgScore = db.owner_review.rating.avg()
 			row['score'] = db(db.owner_review.revieweeID == id).select(avgScore).first()[avgScore]
-			pets = db(db.pet.userID == id)
-			if (species != ''):
-				pets = pets(db.pet.species == species)
-			pets = pets.select()
-			row['pets'] = []
-			for pet in pets:
-				row['pets'].append(pet)
-			rows.append(row)
+			row['fav'] = False if db(db.favorite.favoriterID == auth.user.id)(db.favorite.favoriteeID == id).select().first() is None else True
+
+			hasPet = True
+			#species filter
+			if species != '':
+				hasPet = db(db.pet.userID == id)(db.pet.species == species).select().first() is not None
+
+			if hasPet: rows.append(row)
+
 	return rows
+
+
+@auth.requires_login()
+def toggle_favorite():
+	user = auth.user.id
+	target = request.vars.id
+	isFavorite = False
+
+	log.debug(dict(user=user,target=target))
+
+	set = db(db.favorite.favoriterID == user)(db.favorite.favoriteeID == target)
+	record = set.select().first()
+
+	if record is None:
+		db.favorite.insert(favoriterID = auth.user.id, favoriteeID = target)
+		isFavorite = True
+	else:
+		set.delete()
+
+	return response.json(dict(isFavorite = isFavorite))
+
+
+@auth.requires_login()
+def get_favorites_list():
+	id = auth.user.id
+	favorites = db(db.favorite.favoriterID == id).select()
+	result = []
+	for fav in favorites:
+		favID = fav['favoriteeID']
+		tables = db(db.auth_user.id == favID)(db.profile.userID == favID).select().first()
+		tables['fav'] = True
+		result.append(tables)
+
+	return response.json(dict(favorites = result))
