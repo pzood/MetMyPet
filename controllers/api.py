@@ -130,6 +130,7 @@ def get_sitters_list(cities, email = ''):
 			id = row['auth_user']['id']
 			avgScore = db.sitter_review.rating.avg()
 			row['score'] = db(db.sitter_review.revieweeID == id).select(avgScore).first()[avgScore]
+			row['fav'] = False if db(db.favorite.favoriterID == auth.user.id)(db.favorite.favoriteeID == id).select().first is None else True
 			rows.append(row)
 	return rows
 
@@ -155,14 +156,15 @@ def get_owners_list(cities, email = '', species = ''):
 			id = row['auth_user']['id']
 			avgScore = db.owner_review.rating.avg()
 			row['score'] = db(db.owner_review.revieweeID == id).select(avgScore).first()[avgScore]
-			pets = db(db.pet.userID == id)
-			if (species != ''):
-				pets = pets(db.pet.species == species)
-			pets = pets.select()
-			row['pets'] = []
-			for pet in pets:
-				row['pets'].append(pet)
-			rows.append(row)
+			row['fav'] = False if db(db.favorite.favoriterID == auth.user.id)(db.favorite.favoriteeID == id).select().first is None else True
+
+			hasPet = True
+			#species filter
+			if species != '':
+				hasPet = db(db.pet.userID == id)(db.pet.species == species).select().first() is not None
+
+			if hasPet: rows.append(row)
+
 	return rows
 
 
@@ -180,7 +182,6 @@ def toggle_favorite():
 		isFavorite = True
 	else:
 		set.delete()
-
 
 	return response.json(dict(isFavorite = isFavorite))
 

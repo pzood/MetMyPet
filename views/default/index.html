@@ -250,7 +250,7 @@
 															 <option value="sitter">Sitter</option>
 														</select>
 													 </div>
-													 <!-- <div class="form-group">
+													 <div v-if="searchRole == 'owner'" class="form-group">
 														<label for="filter">Pet Type</label>
 														<select class="form-control" v-model="searchPet">
 															 <option value="">---</option>
@@ -261,7 +261,7 @@
 															 <option value="Rodent">Rodent</option>
 															 <option value="Reptile">Reptile</option>
 														</select>
-													 </div> -->
+													 </div>
 													 <!-- this if we wanna do a search within the search-->
 													 <div class="form-group">
 														<label for="contain">User Email</label>
@@ -289,20 +289,23 @@
 				</div>
 			<!-- Code for loading and displaying all the profiles -->
 			<div class="profile_div" v-for="row in profile_data">
-			  <div class="panel-group">
-				 <div class="panel panel-default">
-					<div class="panel-heading">Name: ${row.auth_user.first_name} ${row.auth_user.last_name}</div>
-					<div class="panel-body">
+			   <div class="panel-group">
+				  <div class="panel panel-default">
+					 <div class="panel-heading">Name: ${row.auth_user.first_name} ${row.auth_user.last_name}
+                         <button>Add to Contacts</button>
+                         <button>Drop Contact</button>
+                     </div>
+					 <div class="panel-body">
 						Location: ${row.profile.city}
-					</div>
-					<div class="panel-body">
+					 </div>
+					 <div class="panel-body">
 						Rating: ${row.score ? $row.score + '/5' : 'Still Unrated'}
-					</div>
-					<div class="panel-body">
+					 </div>
+					 <div class="panel-body">
 						Contact Info: ${row.profile.contact_info}
-					</div>
-				 </div>
-			  </div>
+					 </div>
+                  </div>
+			   </div>
 			</div>
 			<button v-on:click="change_state('home')">Back</button>
 		</div>
