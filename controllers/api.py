@@ -164,3 +164,32 @@ def get_owners_list(cities, email = '', species = ''):
 				row['pets'].append(pet)
 			rows.append(row)
 	return rows
+
+
+@auth.requires_login
+def toggle_favorite():
+	user = auth.user.id
+	target = request.vars.id
+	isFavorite = False
+
+	set = db(db.favorite.favoriterID == user & db.favorite.favoriteeID == target)
+	record = set.first()
+
+	if record is None:
+		db.favorite.insert(favoriterID = id, favoriteeID = target)
+		isFavorite = True
+	else:
+		set.delete()
+
+
+	return response.json(dict(isFavorite = isFavorite))
+
+
+@auth.requires_login
+def get_favorites_list():
+	favorites = db(db.favorite.favoriterID == auth.user.id).select()
+	result = []
+	for fav in favorites:
+		result.append(fav)
+
+	return response.json(dict(favorites = result))
