@@ -25,14 +25,14 @@
 	<div id="splash_title">
 	  <div>PETMET</div>
 	</div>
-	<div id="content" class="jumbotron">
-		  <span class="half">
-				<p>Welcome to PetMet. Please sign up and make a profile if you haven't already.</p>
-		  </span>
-		  <span class="half">
-				<a class="btn padded" style="width:200px" href="{{=URL('default', 'user/login')}}">Log In</a>
-				<a class="btn padded" style="width:200px" href="{{=URL('default', 'user/register')}}">Sign Up</a>
-		  </span>
+	<div id="content">
+		<span class="half">
+			<p>Welcome to PetMet. Please sign up and make a profile if you haven't already.</p>
+		</span>
+		<span class="half">
+			<a class="btn padded" style="width:200px" href="{{=URL('default', 'user/login')}}">Log In</a>
+			<a class="btn padded" style="width:200px" href="{{=URL('default', 'user/register')}}">Sign Up</a>
+		</span>
 	</div>
 </div>
 
@@ -43,10 +43,14 @@
 	 <!--  ............ Begin Home Page .............-->
 	 
 	  <div v-if="state === 'home'">
-		<div id="content" class="container">
+		<div id="buttonPawContent" class="container" style="text-align:center;">
+
+
+        <span>
 		  <button class="buttonPaw" v-on:click="change_state('profile'); view_profile(logged_in_userID)">Profile</button>
 		  <button class="buttonPaw" v-on:click=" initSearch('owner');change_state('listings');">Owners</button>
 		  <button class="buttonPaw" v-on:click="initSearch('sitter');change_state('listings');">Sitters</button>
+        </span>
 		  <button class="buttonPaw buttonPalm" v-on:click="initContacts();change_state('listings');">Contacts</button>
 		  <a class="btn padded" style="width:200px" href="{{=URL('default', 'user/logout')}}">Log Out</a>
 		</div>
@@ -59,12 +63,13 @@
 		<!-- Add code here so that if user has no profile we change the state to
 		go to editProfile -->
 		<!-- For rendering the logged in user profile. Had to cheese it with a 1 element array-->
+		<button v-on:click="change_state('home')">Back</button>
 		<div v-for="person in a_profile">
 			
 			<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad" >
 	
 				<div class="panel panel-info">
-					<div><img v-bind:src="person.image" width="45%" height="45%"></div>
+					<div><img v-bind:src="person.image" width="200px" height="200px"></div>
 					<div class="panel-heading">
 						<h3 class="panel-title">Name: ${person.first_name} ${person.last_name}</h3>
 						<div class="panel-row">Contact Info: ${person.contact_info}</div>
@@ -85,10 +90,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="backButton">
-		  <button v-on:click="change_state('home')">Back</button>
-		  <button v-on:click="change_state('editProfile')">Edit Profile</button>
-		</div>
+		  <button style="text-align:center" v-on:click="change_state('editProfile')">Edit Profile</button>
 	 </div>
 
 	 <div v-if="state==='editProfile'">
@@ -230,8 +232,9 @@
 	<!-- ...........code for Listings Begins..............-->
 	<div v-if="state === 'listings'">
 		<div>
+			<button v-on:click="change_state('home')">Back</button>
 			<div class="container">
-			  <h2>SEARCH</h2>
+			  <h2 align="center">SEARCH PROFILES</h2>
 
 			  <!-- Code for the search bar and the dropdowns to filter our profiles-->
 
@@ -291,24 +294,36 @@
 				</div>
 			<!-- Code for loading and displaying all the profiles -->
 			<div class="profile_div" v-for="row in profile_data">
-			   <div class="panel-group">
-				  <div class="panel panel-default">
-					 <div class="panel-heading">Name: ${row.auth_user.first_name} ${row.auth_user.last_name}
-                         <div v-on:click="toggleFav(row._idx)">
+			  <div class="panel-group">
+				 <div class="panel panel-default">
+					<div class="panel-heading">
+						Name: ${row.auth_user.first_name} ${row.auth_user.last_name}
+						<div class="btn-group pull-right">
+							<button type="button" class="btn btn-primary" style="width:100px" style="width:100px" v-on:click="change_state('profile'); view_profile(row.auth_user.id)">Profile</button>
+							<div v-on:click="toggleFav(row._idx)">
                              <button v-if="!row.fav">Add to Contacts</button>
                              <button v-if="row.fav">Drop Contact</button>
                          </div>
-                     </div>
-					 <div class="panel-body">
-						Location: ${row.profile.city}
-					 </div>
-					 <div class="panel-body">
-						Contact Info: ${row.profile.contact_info}
-					 </div>
-                  </div>
-			   </div>
+						</div>
+					</div>
+					<div class="panel-body">
+						<img v-bind:src="row.profile.image" width="150px" height="150px"></div>
+						<ul>
+							<li>Location: ${row.profile.city}</li>
+							<li>Contact Info: ${row.profile.contact_info}</li>
+						</ul>
+						
+					</div>
+					<div class="panel-body">
+						
+					</div>
+					<div class="panel-body">
+						
+						
+					</div>
+				 </div>
+			  </div>
 			</div>
-			<button v-on:click="change_state('home')">Back</button>
 		</div>
 </div>
 {{pass}}
