@@ -15,13 +15,23 @@ div.main_content {
   vertical-align: middle;
   font-size: 14vw;
   color:white;
-  top: 10%;
-  --x: 1px;
-  --y: 1px;
+  --x: 3px;
+  --y: 3px;
   text-shadow: var(--x) var(--y) mediumpurple;
 }
   
 #content {
+  position: absolute;
+  left:0;
+  top:25%;
+  width:100%;
+  text-align: center;
+  font-size: 18px;
+  padding-left: 25vw;
+  padding-right: 25vw;
+}
+
+#buttonPawContent {
   display: flex;
   flex-direction: column;
   justify-content: center;
