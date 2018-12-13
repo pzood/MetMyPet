@@ -23,6 +23,7 @@ var app = function () {
 	};
 
 	self.initSearch = function(type) {
+		self.vue.show_search_bar = true;
 		// Reset fields to default
 		self.vue.searchLocation = '';
 		self.vue.searchRole = type;
@@ -167,7 +168,7 @@ var app = function () {
 	};
 
 	self.add_owner = function () {
-		let sent_owner_descript = self.vue.owner_description
+		let sent_owner_descript = self.vue.owner_description;
 		$.post(add_owner_URL, {
 			description: sent_owner_descript,
 			live: true,
@@ -278,6 +279,14 @@ var app = function () {
         	id: p.auth_user.id
 		});
 	};
+
+	self.initContacts = function () {
+		self.vue.show_search_bar = false;
+		$.post(get_favorites_list_url, {}, function (data) {
+			console.log(data);
+            self.vue.profile_data = data.favorites;
+		});
+	};
   
 	// Complete as needed.
 	self.vue = new Vue({
@@ -341,6 +350,7 @@ var app = function () {
 			executeSearch: self.executeSearch,
 			initSearch: self.initSearch,
 			toggleFav: self.toggleFav,
+			initContacts: self.initContacts,
 		}
 	});
 	// self.get_profiles();

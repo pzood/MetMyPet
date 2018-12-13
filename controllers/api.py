@@ -188,9 +188,13 @@ def toggle_favorite():
 
 @auth.requires_login()
 def get_favorites_list():
-	favorites = db(db.favorite.favoriterID == auth.user.id).select()
+	id = auth.user.id
+	favorites = db(db.favorite.favoriterID == id).select()
 	result = []
 	for fav in favorites:
-		result.append(fav)
+		favID = fav['favoriteeID']
+		tables = db(db.auth_user.id == favID)(db.profile.userID == favID).select().first()
+		tables['fav'] = True
+		result.append(tables)
 
 	return response.json(dict(favorites = result))
