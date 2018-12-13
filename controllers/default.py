@@ -16,8 +16,7 @@ log.setLevel(logging.DEBUG)
 
 def index():
 
-    if auth.user is None:
-        response.view = 'default/hello.html'
+    
     return dict()
 
 def myFun():

@@ -1,10 +1,339 @@
 {{extend 'layout.html'}}
-
 {{block head}}
+<!-- <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script> -->
+<script src="{{=URL('static', 'js/vue.js')}}"></script>
+<script>
+	var make_profile_URL = "{{=URL('api', 'make_profile', user_signature=True)}}";
+	var add_sitter_URL = "{{=URL('api', 'add_sitter', user_signature=True)}}";
+	var add_owner_URL = "{{=URL('api', 'add_owner', user_signature=True)}}";
+	//var get_profiles_URL = "{{=URL('api', 'add_owner', user_signature=True)}}";
+	var add_pet_URL = "{{=URL('api', 'add_pet', user_signature=True)}}";
+	var get_image_url = "{{=URL('api', 'get_image', user_signature=True)}}";
+	var delete_pet_url = "{{=URL('api', 'delete_pet', user_signature=True)}}";
+	var view_profile_url = "{{=URL('api', 'view_profile', user_signature=True)}}";
+	var get_profiles_list_url = "{{=URL('api', 'get_profiles_list')}}";
+	var toggle_favorite_url = "{{=URL('api', 'toggle_favorite')}}";
+	var get_favorites_list_url = "{{=URL('api', 'get_favorites_list')}}";
+	var logged_in_userID = "{{=None if auth.user is None else auth.user.id}}";
+</script>
 {{end}}
 
-<div class="main_content">
 
-
+{{if auth.user is None:}}
+<div id="splash_background" style="width:100vw;height:100vh">
+	<div id="splash_title">
+	  <div>PETMET</div>
+	</div>
+	<div id="content">
+		<span class="half">
+			<p>Welcome to PetMet. Please sign up and make a profile if you haven't already.</p>
+		</span>
+		<span class="half">
+			<a class="btn padded" style="width:200px" href="{{=URL('default', 'user/login')}}">Log In</a>
+			<a class="btn padded" style="width:200px" href="{{=URL('default', 'user/register')}}">Sign Up</a>
+		</span>
+	</div>
 </div>
 
+{{else:}}
+<div id="main">
+	<!-- Changes the page to the listings page -->
+	<div id="splash_background" style="width:100vw;height:100vh">
+		
+	 <!--  ............ Begin Home Page .............-->
+	 
+	  <div v-if="state === 'home'">
+		<div id="buttonPawContent" class="container" style="text-align:center;">
+
+
+        <span>
+		  <button class="buttonPaw" v-on:click="change_state('profile'); view_profile(logged_in_userID)">Profile</button>
+		  <button class="buttonPaw" v-on:click=" initSearch('owner');change_state('listings');">Owners</button>
+		  <button class="buttonPaw" v-on:click="initSearch('sitter');change_state('listings');">Sitters</button>
+        </span>
+		  <button class="buttonPaw buttonPalm" v-on:click="initContacts();change_state('listings');">Contacts</button>
+		  <a class="btn padded" style="width:200px" href="{{=URL('default', 'user/logout')}}">Log Out</a>
+		</div>
+
+	 </div>
+	 <!-- ............End Home Page .............................-->
+
+	 <!-- ............View Profile ................................-->
+	 <div v-if="state === 'profile'">
+		<!-- Add code here so that if user has no profile we change the state to
+		go to editProfile -->
+		<!-- For rendering the logged in user profile. Had to cheese it with a 1 element array-->
+		<button v-on:click="change_state('home')">Back</button>
+		<div v-for="person in a_profile">
+			
+			<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad" >
+	
+				<div class="panel panel-info">
+					<div class="panel-heading"><img v-bind:src="person.image" width="200px" height="200px"></div>
+					<div class="panel-body">
+						<h3 class="panel-title">Name: ${person.first_name} ${person.last_name}</h3>
+						<div class="panel-row">Contact Info: ${person.contact_info}</div>
+						<div class="panel-row">City: ${person.city}</div>
+					</div>
+					<div class="panel-body">
+						<div v-if="isSitter">
+							<div v-for="sitter in a_sitter">
+								<div class="panel-row">Sitter: ${sitter.description}</div>
+							</div>
+						</div>
+						<div v-if="isOwner">
+							<div v-for="owner in a_owner">
+								<div class="panel-row">Owner: ${owner.description}</div>
+							</div>
+						</div>
+						<div v-if="hasPets">
+							<div class="viewProfile" v-for="pet in a_pets">
+								<div class="panel-row">Pet: ${pet.pet_name}</div>
+								<div class="panel-row">Species: ${pet.species}</div>
+								<div class="panel-row">Description: ${pet.description}</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		  <button style="text-align:center" v-on:click="change_state('editProfile')">Edit Profile</button>
+	 </div>
+
+	 <div v-if="state==='editProfile'">
+		<div class="left half compressible">
+			<div class="container form_row padded">
+				<div class="label quarter">
+					First Name:
+				</div>
+				<div class="form threequarters">
+					<input v-model="fname" />
+				</div>
+			</div>
+			<div class="container form_row padded">
+				<div class="label quarter">
+					Last Name:
+				</div>
+				<div class="form threequarters">
+					<input v-model="lname"/>
+				</div>
+			</div>
+			<div class="container form_row padded">
+				<div class="label quarter">
+					Contact Info:
+				</div>
+				<div class="form threequarters">
+					<input v-model="contact" placeholder="Enter your email" />
+				</div>
+			</div>
+			<div class="container form_row padded">
+				<div class="label quarter">
+					City:
+				</div>
+				<div class="form threequarters">
+					<input v-model="city_name" placeholder="Enter your city name" />
+				</div>
+			</div>
+			<div class="container form_row padded">
+				<div class="form threequarters">
+					<button id="make-profile" v-on:click="make_profile(); change_state('profile')">Submit</button>
+				</div>
+			</div>
+			<!-- The below is the testing form for add_pet() -->
+		<div class="align left">
+			<div>
+				<!-- <img v-if="post.post_image"  v-bind:src="post.post_image" width="30%" height="45%"/><br> -->
+				<p>Pet Name:</p>
+				<textarea v-model="pet_name"></textarea>
+				Pet Species:
+				<!-- The code within the div form group allows the user to select from a predefined drop down menu the animal they are searching for.  -->
+				<div class="form-group">
+					<label for="filter">Pet Type</label>
+					<select v-model="pet_species" class="form-control">
+						<option value="">----</option>
+						<option value="Cat">Cat</option>
+						<option value="Dog">Dog</option>
+						<option value="Bird">Bird</option>
+						<option value="Fish">Fish</option>
+						<option value="Rodent">Rodent</option>
+						<option value="Reptile">Reptile</option>
+					</select>
+				</div>
+				Pet Description:
+				<textarea v-model="pet_description"></textarea>
+			</div>
+			<!-- The below code makes sure that the pet species is selected before you click submit pet -->
+			<div v-if="pet_species != 0">
+				<button v-on:click="add_pet(); reset_species();">Submit Pet</button>
+			</div>
+			<div v-if="pet_species == ''">
+				<button class="fadedButton" v-on:click="add_pet_alert();">Submit Pet</button>
+			</div>
+			<!-- If pet_species is not selected, we send an alert(). We also make the Submit pet button faded  -->
+			</div>
+			<div v-for="pet in pet_list">
+				${pet.pet_name}
+				<button v-on:click="delete_pet(pet.idx)">X</button>
+			</div>
+		</div>
+		<div class="right half">
+			<div class="container form_row padded">
+				<img v-if="image != null" v-bind:src="image" width="40%" height="40%" align="left" /><br>
+				<input type="file" v-on:change="image_changed($event)" accept="image/*" />
+				<div class="quarter"></div>
+			</div>
+			<!-- The below is for sitter/owner profile  -->
+			<div class="form-group">
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1"
+					v-on:click="toggle_sitter_form(); checkBlur();">
+					<label class="form-check-label" for="inlineRadio1">Sitter</label>
+					<!-- </div> -->
+					<!-- <div class="form-check form-check-inline"> -->
+					<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2"
+					v-on:click="toggle_owner_form(); checkBlur();">
+					<label class="form-check-label" for="inlineRadio2">Owner</label>
+					<!-- </div> -->
+					<!-- <div class="form-check form-check-inline"> -->
+					<input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3"
+					v-on:click="toggle_both_form(); checkBlur();">
+					<label class="form-check-label" for="inlineRadio3">Both</label>
+					<!-- The code below shows either the owner or sitter form or both -->
+					<div v-if="show_sitter_form == true">
+						<div class="form-group padded">
+							<label for="sitter_description">Sitter Description:</label>
+							<!-- <input type="sitter_description" class="form-control" id="sitter_description"> -->
+							<textarea v-model="sitter_description"></textarea>
+						</div>
+						<button type="submit" class="btn btn-default" v-on:click="add_sitter()">Submit</button>
+					</div>
+					<div v-if="show_owner_form == true">
+						<div class="form-group">
+							<label for="owner_description">Owner Description:</label>
+							<!-- <input type="owner_description" class="form-control" id="owner_description"> -->
+							<textarea v-model="owner_description"></textarea>
+						</div>
+						<button type="submit" class="btn btn-default" v-on:click="add_owner();">Submit</button>
+					</div>
+					<div v-if="show_both_form == true">
+						<div class="form-group">
+							<label for="sitter_description">Sitter Description:</label>
+							<!-- <input type="sitter_description" class="form-control" id="sitter_description"> -->
+							<textarea v-model="sitter_description"></textarea>
+						</div>
+						<div class="form-group">
+							<label for="owner_description">Owner Description:</label>
+							<!-- <input type="owner_description" class="form-control" id="owner_description"> -->
+							<textarea v-model="owner_description"></textarea>
+						</div>
+						<button type="submit" class="btn btn-default" v-on:click="add_owner(); add_sitter();">Submit</button>
+					</div>
+				</div>
+			</div>
+			<!-- The ABOVE code is for the radio buttons -->
+		</div>
+		<button v-on:click="change_state('home')">Back</button>
+	</div>
+	<!-- The above is the testing form for add_pet() -->
+	<!-- code for loading and displaying all the profiles-->
+	<!-- ...........code for Listings Begins..............-->
+	<div v-if="state === 'listings'">
+		<div>
+			<button v-on:click="change_state('home')">Back</button>
+			<div class="container">
+			  <h2 align="center">SEARCH PROFILES</h2>
+
+			  <!-- Code for the search bar and the dropdowns to filter our profiles-->
+
+			  <div class="row">
+				<div class="col-md-12">
+						<div v-if="show_search_bar" class="input-group" id="adv-search">
+							 <input type="text" class="form-control" placeholder="Location" v-model="searchLocation"/>
+							 <div class="input-group-btn">
+								  <div class="btn-group" role="group">
+										<div class="dropdown dropdown-lg">
+											 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"></button>
+											 <div class="dropdown-menu dropdown-menu-right" role="menu">
+												  <form class="form-horizontal" role="form">
+													 <div class="form-group">
+														<label for="filter">Profile Type</label>
+														<select class="form-control" v-model="searchRole">
+															 <option value="owner">Owner</option>
+															 <option value="sitter">Sitter</option>
+														</select>
+													 </div>
+													 <div v-if="searchRole == 'owner'" class="form-group">
+														<label for="filter">Pet Type</label>
+														<select class="form-control" v-model="searchPet">
+															 <option value="">---</option>
+															 <option value="Cat">Cat</option>
+															 <option value="Dog">Dog</option>
+															 <option value="Bird">Bird</option>
+															 <option value="Fish">Fish</option>
+															 <option value="Rodent">Rodent</option>
+															 <option value="Reptile">Reptile</option>
+														</select>
+													 </div>
+													 <!-- this if we wanna do a search within the search-->
+													 <div class="form-group">
+														<label for="contain">User Email</label>
+														<input class="form-control" type="text" v-model="searchEmail" />
+													 </div>
+														
+													 <button type="button" class="btn btn-primary" v-on:click="executeSearch">
+															 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+														</button>
+												  </form>
+											 </div>
+										</div>
+										<button type="button" class="btn btn-primary" v-on:click="executeSearch">
+												<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+										  </button>
+								  </div>
+							 </div>
+						</div>
+					 </div>
+				  </div>
+			</div>
+				<!-- Warning appears when no results to show. -->
+				<div v-if="profile_data.length == 0" class="alert alert-warning" role="alert">
+					 Sorry, no listings are available.
+				</div>
+			<!-- Code for loading and displaying all the profiles -->
+			<div class="profile_div" v-for="row in profile_data">
+			  <div class="panel-group">
+				 <div class="panel panel-default">
+					<div class="panel-heading">
+						Name: ${row.auth_user.first_name} ${row.auth_user.last_name}
+						<div class="btn-group pull-right">
+							<button type="button" class="btn btn-primary" style="width:100px" style="width:100px" v-on:click="change_state('profile'); view_profile(row.auth_user.id)">Profile</button>
+							<div v-on:click="toggleFav(row._idx)">
+                             <button v-if="!row.fav">Add to Contacts</button>
+                             <button v-if="row.fav">Drop Contact</button>
+                         </div>
+						</div>
+					</div>
+					<div class="panel-body">
+						<img v-bind:src="row.profile.image" width="150px" height="150px"></div>
+						<ul>
+							<li>Location: ${row.profile.city}</li>
+							<li>Contact Info: ${row.profile.contact_info}</li>
+						</ul>
+						
+					</div>
+					<div class="panel-body">
+						
+					</div>
+					<div class="panel-body">
+						
+						
+					</div>
+				 </div>
+			  </div>
+			</div>
+		</div>
+</div>
+{{pass}}
+
+<script src="{{=URL('static', 'js/default_index.js')}}"></script>
