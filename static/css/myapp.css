@@ -97,6 +97,15 @@ div.main_content {
     border-bottom-left-radius: 4px;
 }
 
+div#padding {
+  padding: 5px;
+}
+
+.viewProfile {
+  border-top-left-radius: 5px;
+  padding: 5px;
+}
+
 .form-horizontal .form-group {
     margin-left: 10px;
     margin-right: 10px;

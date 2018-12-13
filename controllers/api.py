@@ -67,7 +67,10 @@ def view_profile():
 	user_id=request.vars.userID
 	currProfile=db(db.profile.userID==user_id).select()
 	profilePic=db(db.profile.userID==user_id).select().first()
-	image_url = profilePic.image
+	if profilePic is not None:
+		image_url = profilePic.image
+	else:
+		image_url=None
 	currSitter=db(db.sitter.userID==user_id).select()
 	currOwner=db(db.pet_owner.userID==user_id).select()
 	currPets=db(db.pet.userID==user_id).select()
