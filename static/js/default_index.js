@@ -46,6 +46,7 @@ var app = function () {
 			{
 				self.vue.cities = data.cities;
 				self.vue.profile_data = data.result;
+				enumerate(self.vue.profile_data);
 				console.log(data);
 			});
 	};
@@ -269,6 +270,14 @@ var app = function () {
 		console.log(self.vue.is);
 		console.log(self.vue.a_profile);
 	};
+
+	self.toggleFav = function (idx) {
+		let p = self.vue.profile_data[idx];
+        Vue.set(p, 'fav', !p.fav);
+        $.post(toggle_favorite_url, {
+        	id: p.auth_user.id
+		});
+	};
   
 	// Complete as needed.
 	self.vue = new Vue({
@@ -331,6 +340,7 @@ var app = function () {
 			change_state: self.change_state,
 			executeSearch: self.executeSearch,
 			initSearch: self.initSearch,
+			toggleFav: self.toggleFav,
 		}
 	});
 	// self.get_profiles();

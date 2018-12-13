@@ -13,6 +13,7 @@
 	var delete_pet_url = "{{=URL('api', 'delete_pet', user_signature=True)}}";
 	var view_profile_url = "{{=URL('api', 'view_profile', user_signature=True)}}";
 	var get_profiles_list_url = "{{=URL('api', 'get_profiles_list')}}";
+	var toggle_favorite_url = "{{=URL('api', 'toggle_favorite')}}";
 	var logged_in_userID = "{{=None if auth.user is None else auth.user.id}}";
 </script>
 {{end}}
@@ -292,8 +293,10 @@
 			   <div class="panel-group">
 				  <div class="panel panel-default">
 					 <div class="panel-heading">Name: ${row.auth_user.first_name} ${row.auth_user.last_name}
-                         <button>Add to Contacts</button>
-                         <button>Drop Contact</button>
+                         <div v-on:click="toggleFav(row._idx)">
+                             <button v-if="!row.fav">Add to Contacts</button>
+                             <button v-if="row.fav">Drop Contact</button>
+                         </div>
                      </div>
 					 <div class="panel-body">
 						Location: ${row.profile.city}
