@@ -41,10 +41,12 @@
 	 <!--  ............ Begin Home Page .............-->
 	 
 	  <div v-if="state === 'home'">
-		<div id="content" class="container">
-		  <button class="buttonPaw" v-on:click="change_state('profile'); view_profile(logged_in_userID)">Profile</button>
-		  <button class="buttonPaw" v-on:click="change_state('listings'); initSearch('owner')">Owners</button>
-		  <button class="buttonPaw" v-on:click="change_state('listings'); initSearch('sitter')">Sitters</button>
+		<div id="content" class="container" style="text-align:center;">
+			<span>
+			  <button class="buttonPaw" v-on:click="change_state('profile'); view_profile(logged_in_userID)">Profile</button>
+			  <button class="buttonPaw" v-on:click="change_state('listings'); initSearch('owner')">Owners</button>
+			  <button class="buttonPaw" v-on:click="change_state('listings'); initSearch('sitter')">Sitters</button>
+			</span>
 		  <button class="buttonPaw buttonPalm" v-on:click="change_state('contacts')">Contacts</button>
 		  <a class="btn padded" style="width:200px" href="{{=URL('default', 'user/logout')}}">Log Out</a>
 		</div>
@@ -62,7 +64,7 @@
 			<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad" >
 	
 				<div class="panel panel-info">
-					<div><img v-bind:src="person.image" width="45%" height="45%"></div>
+					<div><img v-bind:src="person.image" width="200px" height="200px"></div>
 					<div class="panel-heading">
 						<h3 class="panel-title">Name: ${person.first_name} ${person.last_name}</h3>
 						<div class="panel-row">Contact Info: ${person.contact_info}</div>
@@ -229,7 +231,7 @@
 	<div v-if="state === 'listings'">
 		<div>
 			<div class="container">
-			  <h2>SEARCH</h2>
+			  <h2 align="center">SEARCH PROFILES</h2>
 
 			  <!-- Code for the search bar and the dropdowns to filter our profiles-->
 
@@ -250,7 +252,7 @@
 															 <option value="sitter">Sitter</option>
 														</select>
 													 </div>
-													 <!-- <div class="form-group">
+													 <div class="form-group">
 														<label for="filter">Pet Type</label>
 														<select class="form-control" v-model="searchPet">
 															 <option value="">---</option>
@@ -261,7 +263,7 @@
 															 <option value="Rodent">Rodent</option>
 															 <option value="Reptile">Reptile</option>
 														</select>
-													 </div> -->
+													 </div>
 													 <!-- this if we wanna do a search within the search-->
 													 <div class="form-group">
 														<label for="contain">User Email</label>
@@ -291,15 +293,28 @@
 			<div class="profile_div" v-for="row in profile_data">
 			  <div class="panel-group">
 				 <div class="panel panel-default">
-					<div class="panel-heading">Name: ${row.auth_user.first_name} ${row.auth_user.last_name}</div>
-					<div class="panel-body">
-						Location: ${row.profile.city}
+					<div class="panel-heading">
+						Name: ${row.auth_user.first_name} ${row.auth_user.last_name}
+						<div class="btn-group pull-right">
+							<button type="button" class="btn btn-primary" style="width:100px" style="width:100px" v-on:click="change_state('profile'); view_profile(row.auth_user.id)">Profile</button>
+							<button type="button" class="btn btn-primary" style="width:100px">Favorite</button>
+						</div>
 					</div>
 					<div class="panel-body">
-						Rating: ${row.score ? $row.score + '/5' : 'Still Unrated'}
+						<img v-bind:src="row.profile.image" width="150px" height="150px"></div>
+						<ul>
+							<li>Location: ${row.profile.city}</li>
+							<li>Rating: ${row.score ? $row.score + '/5' : 'Still Unrated'}</li>
+							<li>Contact Info: ${row.profile.contact_info}</li>
+						</ul>
+						
 					</div>
 					<div class="panel-body">
-						Contact Info: ${row.profile.contact_info}
+						
+					</div>
+					<div class="panel-body">
+						
+						
 					</div>
 				 </div>
 			  </div>
